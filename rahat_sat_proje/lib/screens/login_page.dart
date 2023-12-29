@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grock/grock.dart';
-import 'package:rahat_sat_proje/features/colors.dart';
-import 'package:rahat_sat_proje/riverpod/riverpod_management.dart';
-import 'package:rahat_sat_proje/screens/forgot_password.dart';
+import 'package:rahat_sat_project/features/colors.dart';
+import 'package:rahat_sat_project/riverpod/riverpod_management.dart';
+import 'package:rahat_sat_project/screens/forgot_password.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,12 +12,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-
   bool _passwordLock = false;
   bool _rememberMe = true;
-  
+
   get ref => context;
-  
 
   void _passwordHidden() {
     setState(() {
@@ -35,7 +33,7 @@ class _LoginPage extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration:ColorsDecoration.loginDecoration,
+        decoration: ColorsDecoration.loginDecoration,
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -148,13 +146,13 @@ class _LoginPage extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                width: Grock.width,
-                child: ElevatedButton(
-                  onPressed: () => ref.read(loginRiverpod).fetch(),
-                  child: const Text(
-                    "Giriş Yap",
-                  ),
-                /*  GestureDetector(
+                      width: Grock.width,
+                      child: ElevatedButton(
+                        onPressed: () => ref.read(loginRiverpod).fetch(),
+                        child: const Text(
+                          "Giriş Yap",
+                        ),
+                        /*  GestureDetector(
                     //Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage())),
                     onTap: () => ref.read(loginRiverpod).fetch(),
                     child: Container(
@@ -173,7 +171,8 @@ class _LoginPage extends State<LoginPage> {
                               color: Colors.deepPurple),
                         ))),
                   )*/
-              ))],
+                      ))
+                ],
               ),
             ),
           ),

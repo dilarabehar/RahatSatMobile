@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rahat_sat_proje/screens/product.dart';
+
+import 'package:rahat_sat_project/screens/product.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));

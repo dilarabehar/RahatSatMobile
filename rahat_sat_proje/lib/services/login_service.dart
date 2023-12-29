@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:rahat_sat_proje/model/login_model.dart';
+import 'package:rahat_sat_project/model/login_model.dart';
 
 class Service{
   final String baseUrl = "http://127.0.0.1:8000/api/";

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:rahat_sat_proje/screens/login_page.dart';
+import 'package:rahat_sat_project/screens/login_page.dart';
 
 class Products extends StatefulWidget {
   const Products({super.key});

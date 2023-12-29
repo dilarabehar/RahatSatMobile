@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rahat_sat_proje/model/product_model.dart';
-import 'package:rahat_sat_proje/services/data_provider.dart';
+import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/services/data_provider.dart';
 
 //when is callback function
 //consumer widget is like a stateful widget and coming from riverpod

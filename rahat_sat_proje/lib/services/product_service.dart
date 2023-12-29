@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
-import 'package:rahat_sat_proje/model/product_model.dart';
+import 'package:rahat_sat_project/model/product_model.dart';
 
 class ProductService{
   final String baseUrl = "https://uygulama.rahatsat.com/api/";

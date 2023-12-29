@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rahat_sat_proje/screens/login_page.dart';
-import 'package:rahat_sat_proje/screens/products.dart';
+import 'package:rahat_sat_project/screens/login_page.dart';
+import 'package:rahat_sat_project/screens/products.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,7 +27,8 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildListTile(IconData icon, String title) {
     return ListTile(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>const Products())),
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Products())),
       leading: SizedBox(
         height: 34,
         width: 34,
@@ -121,7 +122,7 @@ class _HomePage extends State<HomePage> {
                     _isFullScreen ? Icons.fit_screen : Icons.fullscreen,
                   ),
                   onPressed: () => setFullScreen(!_isFullScreen),
-                  color:const Color.fromARGB(255, 0, 0, 0),
+                  color: const Color.fromARGB(255, 0, 0, 0),
                 ),
                 IconButton(
                   icon: Icon(_isFullScreen == ThemeMode.dark
@@ -130,9 +131,12 @@ class _HomePage extends State<HomePage> {
                   onPressed: null,
                   color: Colors.black87,
                 ),
-                 IconButton(
+                IconButton(
                   icon: const Icon(Icons.logout_outlined),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage())),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage())),
                   color: Colors.black87,
                 )
               ],

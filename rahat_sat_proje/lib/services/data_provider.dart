@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rahat_sat_proje/model/product_model.dart';
-import 'package:rahat_sat_proje/services/product_service.dart';
+import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/services/product_service.dart';
 
 final productDataProvider = FutureProvider<List<ProductModelCategoriesProducts>>((ref) async{
   return ref.watch(productProvider).getProduct();
