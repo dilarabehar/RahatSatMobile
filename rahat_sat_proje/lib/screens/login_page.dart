@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:grock/grock.dart';
 import 'package:rahat_sat_project/features/colors.dart';
-import 'package:rahat_sat_project/riverpod/riverpod_management.dart';
 import 'package:rahat_sat_project/screens/forgot_password.dart';
+import 'package:rahat_sat_project/model/login_model.dart';
+import 'package:rahat_sat_project/services/user_client.dart';
+import 'package:rahat_sat_project/model/autho_response.dart';
+import 'package:rahat_sat_project/model/product_model.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  
+  final UserClient userClient = UserClient();
+
+  LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPage();
@@ -14,8 +20,59 @@ class LoginPage extends StatefulWidget {
 class _LoginPage extends State<LoginPage> {
   bool _passwordLock = false;
   bool _rememberMe = true;
+  bool _login = false;
 
-  get ref => context;
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+  
+  void onLoginButtonPress()
+{
+  setState(() {
+    _login =true;
+    LoginModel user = LoginModel(email: emailController.text, password: passwordController.text);
+    widget.userClient.Login(user).then((response)=>{onLoginCallCompleted(response)});
+
+    print(emailController.text);
+  });
+}
+
+void onLoginCallCompleted(var response)
+{
+ if(response == null)
+ {
+  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
+ }
+ else{
+  if(response is AuthResponse)
+  {
+      getProducts();
+  }
+
+ }
+  setState(() {
+    _login = false;
+  });
+}
+
+void getProducts(){
+  setState(() {
+    _login = true;
+    widget.userClient.getProduct().then((response) => onGetProductSucces(response));
+  });
+}
+
+onGetProductSucces(List<ProductModelCategories>? products)
+{
+  setState(() {
+    if(products != null)
+    {
+      for(var product in products)
+      {
+        print(product.id);
+      }
+    }
+  });
+}
 
   void _passwordHidden() {
     setState(() {
@@ -59,7 +116,7 @@ class _LoginPage extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: TextField(
-                        controller: ref.read(loginRiverpod).usernameController,
+                        controller: emailController,
                         obscureText: false,
                         decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.person_sharp),
@@ -86,7 +143,7 @@ class _LoginPage extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: TextField(
-                      controller: ref.read(loginRiverpod).passwordController,
+                      controller: passwordController,
                       obscureText: !_passwordLock,
                       decoration: InputDecoration(
                         prefixIcon: const Icon(Icons.lock_outline_rounded),
@@ -148,7 +205,7 @@ class _LoginPage extends State<LoginPage> {
                   SizedBox(
                       width: Grock.width,
                       child: ElevatedButton(
-                        onPressed: () => ref.read(loginRiverpod).fetch(),
+                        onPressed: onLoginButtonPress,
                         child: const Text(
                           "Giriş Yap",
                         ),

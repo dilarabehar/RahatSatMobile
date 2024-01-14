@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 
 class ProductService{
-  final String baseUrl = "https://uygulama.rahatsat.com/api/";
+  final String baseUrl = "http://127.0.0.1:8000/api/";
   Future<List<ProductModelCategoriesProducts>> getProduct()async{
       var response = await get(Uri.parse(baseUrl));
       if(response.statusCode==200){

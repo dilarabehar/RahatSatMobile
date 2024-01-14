@@ -40,6 +40,8 @@ dependencies:
   grock: ^0.5.5
   flutter_speed_dial: ^7.0.0
   riverpod: ^2.4.9
+  dio: ^5.4.0
+  flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
   flutter_test:

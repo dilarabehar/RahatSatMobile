@@ -4,26 +4,26 @@
 class LoginModel {
 /*
 {
-  "message": "Giriş başarılı",
-  "token": "8|kjYun1mMv7zHCEsNQxm3DMrati8VRgHhMIVLKhFn5df3c4f4"
+  "email": "admin@rahatsat.com",
+  "password": "7QSNTzh86EePCu3K"
 } 
 */
 
-  String? message;
-  String? token;
+  String ?email;
+  String ?password;
 
   LoginModel({
-    this.message,
-    this.token,
+    this.email,
+    this.password,
   });
   LoginModel.fromJson(Map<String, dynamic> json) {
-    message = json['message']?.toString();
-    token = json['token']?.toString();
+    email = json['email']?.toString();
+    password = json['password']?.toString();
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
-    data['message'] = message;
-    data['token'] = token;
+    data['email'] = email;
+    data['password'] = password;
     return data;
   }
 }
