@@ -3,6 +3,7 @@ import 'package:rahat_sat_project/features/colors.dart';
 import 'package:rahat_sat_project/model/autho_response.dart';
 import 'package:rahat_sat_project/model/login_model.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/screens/home_page_a.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 void main() {
@@ -24,13 +25,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      home:    MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-   MyHomePage({super.key, required this.title});
+  MyHomePage({super.key, required this.title});
   final UserClient userClient = UserClient();
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -51,74 +52,73 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
-   bool _passwordLock = false;
+  bool _passwordLock = false;
   bool _rememberMe = true;
-  bool _login=false;
+  bool _login = false;
 
   void _incrementCounter() {
-    setState(() {
-    });
+    setState(() {});
   }
 
-  void initState()
-  {
+  void initState() {
     LoginModel user = LoginModel();
     super.initState();
     _login = true;
-  //apicall
-     //widget.userClient.Login(user).then((value) => null);
-     print(_login);
-    
+    //apicall
+    //widget.userClient.Login(user).then((value) => null);
+    print(_login);
   }
 
-  void onLoginButtonPress()
-{
-  setState(() {
-    _login =true;
-    LoginModel user = LoginModel(email: emailController.text, password: passwordController.text);
-    widget.userClient.Login(user).then((response)=>{onLoginCallCompleted(response)});
+  void onLoginButtonPress() {
+    setState(() {
+      _login = true;
+      LoginModel user = LoginModel(
+          email: emailController.text, password: passwordController.text);
+      widget.userClient
+          .Login(user)
+          .then((response) => {onLoginCallCompleted(response)});
 
-    print(emailController.text);
-  });
-}
-
-void onLoginCallCompleted(var response)
-{
- if(response == null)
- {
-  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
- }
- else{
-  if(response is AuthResponse)
-  {
-      getProducts();
+      print(emailController.text);
+    });
   }
 
- }
-  setState(() {
-    _login = false;
-  });
-}
-
-void getProducts(){
-  setState(() {
-    _login = true;
-    widget.userClient.getProduct().then((response) => onGetProductSucces(response));
-  });
-}
-
-onGetProductSucces(List<ProductModelCategories>? products)
-{
-  setState(() {
-    if(products != null)
-    {
-      for(var product in products)
-      {
-        print(product.id); //burdan geliyor ürün özelliği
+  void onLoginCallCompleted(var response) {
+    if (response == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
+    } else {
+      if (response is AuthResponse) {
+        getProducts();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
       }
     }
-  });
-}
+    setState(() {
+      _login = false;
+    });
+  }
+
+  void getProducts() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getProduct()
+          .then((response) => onGetProductSucces(response));
+    });
+  }
+
+  onGetProductSucces(List<ProductModelCategories>? products) {
+    setState(() {
+      if (products != null) {
+        for (var product in products) {
+          print(product.id); //burdan geliyor ürün özelliği
+        }
+      }
+    });
+  }
+
   void _passwordHidden() {
     setState(() {
       _passwordLock = !_passwordLock;
@@ -136,7 +136,7 @@ onGetProductSucces(List<ProductModelCategories>? products)
     return Scaffold(
       body: Container(
         decoration: ColorsDecoration.loginDecoration,
-          child: SafeArea(
+        child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
               child: Column(
@@ -220,36 +220,37 @@ onGetProductSucces(List<ProductModelCategories>? products)
                     padding: const EdgeInsets.symmetric(horizontal: 3),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                      width: 5,
-                      child: ElevatedButton(
-                        onPressed: onLoginButtonPress,
-                        child: const Text(
-                          "Giriş Yap",
-                        ),
-                        /*  GestureDetector(
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage())),
-                    onTap: () => ref.read(loginRiverpod).fetch(),
-                    child: Container(
-                        width: 150,
+                    child: ElevatedButton(
+                      onPressed: onLoginButtonPress,
+                      child: SizedBox(
                         height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
+                        child: FittedBox(//burada belirli ölçüye göre sınırlandırması için kullandım
+                          fit: BoxFit
+                              .scaleDown,
+                          child: Container(
+                            decoration: BoxDecoration(
+                           //   color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: EdgeInsets.all(
+                                5),
+                            child: const Text(
+                              "Giriş Yap",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                          ),
                         ),
-                        child: const Center(
-                            child: Text(
-                          "Giriş Yap",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.deepPurple),
-                        ))),
-                  )*/
-                      ))
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -259,5 +260,3 @@ onGetProductSucces(List<ProductModelCategories>? products)
     );
   }
 }
-
-

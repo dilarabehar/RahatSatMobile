@@ -5,10 +5,10 @@ import 'package:rahat_sat_project/model/autho_response.dart';
 import 'package:rahat_sat_project/model/login_model.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 import 'package:rahat_sat_project/screens/forgot_password.dart';
+import 'package:rahat_sat_project/screens/home_page_a.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 class LoginPage extends StatefulWidget {
-  
   final UserClient userClient = UserClient();
 
   LoginPage({super.key});
@@ -24,55 +24,56 @@ class _LoginPage extends State<LoginPage> {
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
-  
-  void onLoginButtonPress()
-{
-  setState(() {
-    _login =true;
-    LoginModel user = LoginModel(email: emailController.text, password: passwordController.text);
-    widget.userClient.Login(user).then((response)=>{onLoginCallCompleted(response)});
 
-    print(emailController.text);
-  });
-}
+  void onLoginButtonPress() {
+    setState(() {
+      _login = true;
+      LoginModel user = LoginModel(
+          email: emailController.text, password: passwordController.text);
+      widget.userClient
+          .Login(user)
+          .then((response) => {onLoginCallCompleted(response)});
 
-void onLoginCallCompleted(var response)
-{
- if(response == null)
- {
-  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
- }
- else{
-  if(response is AuthResponse)
-  {
-      getProducts();
+      print(emailController.text);
+    });
   }
 
- }
-  setState(() {
-    _login = false;
-  });
-}
-
-void getProducts(){
-  setState(() {
-    _login = true;
-    widget.userClient.getProduct().then((response) => onGetProductSucces(response));
-  });
-}
-
-onGetProductSucces(List<ProductModelCategories>? products)
-{
-  setState(() {
-    if(products != null)
-    {
-      for(var product in products)
-      {
-        print(product.id);
+  void onLoginCallCompleted(var response) {
+    if (response == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
+    } else {
+      if (response is AuthResponse) {
+        getProducts();
+        Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
       }
     }
-  });
-}
+    setState(() {
+      _login = false;
+    });
+  }
+
+  void getProducts() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getProduct()
+          .then((response) => onGetProductSucces(response));
+    });
+  }
+
+  onGetProductSucces(List<ProductModelCategories>? products) {
+    setState(() {
+      if (products != null) {
+        for (var product in products) {
+          print(product.id);
+        }
+      }
+    });
+  }
 
   void _passwordHidden() {
     setState(() {
@@ -206,29 +207,27 @@ onGetProductSucces(List<ProductModelCategories>? products)
                       width: Grock.width,
                       child: ElevatedButton(
                         onPressed: onLoginButtonPress,
-                        child: const Text(
-                          "Giriş Yap",
+                        child: SizedBox(
+                          width: 150,
+                          height: 50,
+                          child: Container(decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                              child: const Center(
+                                child: Text(
+                                  "Giriş Yap",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    color: Colors.deepPurple,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        /*  GestureDetector(
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage())),
-                    onTap: () => ref.read(loginRiverpod).fetch(),
-                    child: Container(
-                        width: 150,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Center(
-                            child: Text(
-                          "Giriş Yap",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.deepPurple),
-                        ))),
-                  )*/
-                      ))
+                      )
                 ],
               ),
             ),
