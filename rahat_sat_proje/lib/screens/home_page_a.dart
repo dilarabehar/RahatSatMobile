@@ -25,10 +25,10 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-  Widget _buildListTile(IconData icon, String title) {
+  Widget _buildListTile(IconData icon, String title,Widget destinationScreen) {
     return ListTile(
       onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const Products())),
+          context, MaterialPageRoute(builder: (context) => destinationScreen)),
       leading: SizedBox(
         height: 34,
         width: 34,
@@ -75,13 +75,13 @@ class _HomePage extends State<HomePage> {
                     ),
                   ),
                 ),
-                _buildListTile(Icons.home, "Ana Sayfa"),
-                _buildListTile(Icons.shopping_bag, "Satılan Ürünler"),
-                _buildListTile(Icons.person, "Personeller"),
-                _buildListTile(Icons.person_off, "Personel İzinleri"),
-                _buildListTile(Icons.share_location_rounded, "Satışlar"),
-                _buildListTile(Icons.bar_chart_outlined, "Satış İstatikleri"),
-                _buildListTile(Icons.pending_actions, "Satış Ekranı"),
+                _buildListTile(Icons.home, "Ana Sayfa",HomePage()),
+                _buildListTile(Icons.shopping_bag, "Satılan Ürünler",Products()),
+                _buildListTile(Icons.person, "Personeller",Products()),
+                _buildListTile(Icons.person_off, "Personel İzinleri",Products()),
+                _buildListTile(Icons.share_location_rounded, "Satışlar",Products()),
+                _buildListTile(Icons.bar_chart_outlined, "Satış İstatikleri",Products()),
+                _buildListTile(Icons.pending_actions, "Satış Ekranı",Products()),
                 const Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Align(
@@ -93,12 +93,12 @@ class _HomePage extends State<HomePage> {
                     ),
                   ),
                 ),
-                _buildListTile(Icons.people, "Kullanıcılar"),
-                _buildListTile(Icons.category, "Kategoriler"),
-                _buildListTile(Icons.shopping_basket, "Ürünler"),
-                _buildListTile(Icons.shopping_basket, "Ürün Talepleri"),
-                _buildListTile(Icons.money, "Ürün Tedarikçi Fiyatları"),
-                _buildListTile(Icons.add_home_work, "Marketler"),
+                _buildListTile(Icons.people, "Kullanıcılar",Products()),
+                _buildListTile(Icons.category, "Kategoriler",Products()),
+                _buildListTile(Icons.shopping_basket, "Ürünler",Products()),
+                _buildListTile(Icons.shopping_basket, "Ürün Talepleri",Products()),
+                _buildListTile(Icons.money, "Ürün Tedarikçi Fiyatları",Products()),
+                _buildListTile(Icons.add_home_work, "Marketler",Products()),
               ],
             ),
           ],

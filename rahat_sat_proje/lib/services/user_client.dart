@@ -42,7 +42,7 @@ class UserClient {
   }
   }
 
-  Future<List<ProductModelCategories>?> getProduct() async {
+  Future<List<SoldListing>?> getProduct() async {
     try {
       var token = await _dataService.tryGetItem("token");
       if (token != null) {
@@ -55,20 +55,12 @@ class UserClient {
           },
         );
         if (response.statusCode == 200) {
-          List<ProductModelCategories> products = [];
-          var productListings = jsonDecode(response.body)["productListings"];
-          if (productListings is List) {
-            for (var product in productListings) {
-              products.add(ProductModelCategories(
-                  createdAt: product["created_at"],
-                  updatedAt: product["updated_at"],
-                  id: product["id"],
-                  name: product["name"],
-                  image: product["image"],
-                  products: product["products"]));
-            }
-            return products;
-          }
+          List<SoldListing> productListingList = [];
+
+          for (var productListing in jsonDecode(response.body)["productListings"]) {
+          productListingList.add(SoldListing.fromJson(productListing));
+        }
+        return productListingList;
         }
       }
       return null;
@@ -77,8 +69,77 @@ class UserClient {
       return null;
     }
   }
+
+
+
+
+Future<List<ProductListing>> fetchDataForPage(int page) async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token != null) {
+      var response = await http.get(
+        Uri.parse(baseUrl + "products?page=$page"), // Include the page parameter in the URL
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<ProductListing> productListingList = [];
+
+        var products = jsonDecode(response.body)["products"];
+        if (products is List) {
+          for (var product in products) {
+            productListingList.add(ProductListing.fromJson(product));
+          }
+          return productListingList;
+        }
+      }
+    }
+    // Handle the case where the request fails
+    throw Exception('Failed to load data for page $page');
+  } catch (error) {
+    print(error);
+    // Handle any errors that occur during the process
+    throw Exception('Error fetching data for page $page: $error');
+  }
 }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
+ * 
+ * List<ProductModelCategoriesProducts> products = [];
+          var productListings = jsonDecode(response.body)["productListings"];
+          if (productListings is List) {
+            for (var product in productListings) {
+              products.add(ProductModelCategoriesProducts.fromJson(product));
+            }
+            return products;
+          }
+ * 
+ * 
+ * 
+ *   createdAt: product["created_at"],
+                  updatedAt: product["updated_at"],
+                  id: product["id"],
+                  name: product["name"],
+                  image: product["image"],
+ * 
+ * 
  *  Future<List<ProductModelCategories>?> getProduct()async{
       try{
         var token = await _dataService.tryGetItem("token");

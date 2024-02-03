@@ -4,6 +4,8 @@ import 'package:rahat_sat_project/model/autho_response.dart';
 import 'package:rahat_sat_project/model/login_model.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 import 'package:rahat_sat_project/screens/home_page_a.dart';
+import 'package:rahat_sat_project/screens/product_sold.dart';
+import 'package:rahat_sat_project/screens/product_list.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 void main() {
@@ -61,7 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void initState() {
-    LoginModel user = LoginModel();
     super.initState();
     _login = true;
     //apicall
@@ -88,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
     } else {
       if (response is AuthResponse) {
-        getProducts();
+        getProductsList();         //buradan getiriyorum
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
@@ -100,24 +101,27 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void getProducts() {
+  void getSoldProducts() {
     setState(() {
       _login = true;
       widget.userClient
           .getProduct()
-          .then((response) => onGetProductSucces(response));
+          .then((response) => onGetSoldProductSucces(response));
     });
   }
 
-  onGetProductSucces(List<ProductModelCategories>? products) {
+
+  onGetSoldProductSucces(List<SoldListing>? products) {
     setState(() {
       if (products != null) {
-        for (var product in products) {
+        /*for (var product in products) {
           print(product.id); //burdan geliyor ürün özelliği
-        }
+        }*/
+        Navigator.push(context, 
+        MaterialPageRoute(builder: (context) => ProductView(inProducts: products)));
       }
     });
-  }
+  }  
 
   void _passwordHidden() {
     setState(() {
@@ -130,6 +134,30 @@ class _MyHomePageState extends State<MyHomePage> {
       _rememberMe = !_rememberMe;
     });
   }
+
+
+  void getProductsList() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .fetchDataForPage(1)
+          .then((response) => onGetProductListSucces(response));
+    });
+  }
+
+
+  onGetProductListSucces(List<ProductListing>? products) {
+    setState(() {
+      if (products != null) {
+        Navigator.push(context, 
+        MaterialPageRoute(builder: (context) => ProductListView(inProductsList: products)));
+      }
+    });
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -260,3 +288,32 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+/**
+ * 
+ * 
+ * 
+ *   void getProductsList() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getProductList()
+          .then((response) => onGetProductListSucces(response));
+    });
+  }
+
+ onGetProductListSucces(List<ProductListListing>? products) {
+    setState(() {
+      if (products != null) {
+        /*for (var product in products) {
+          print(product.id); //burdan geliyor ürün özelliği
+        }*/
+        Navigator.push(context, 
+        MaterialPageRoute(builder: (context) => ProductListView(inProductsList: products)));
+      }
+    });
+  }
+ * 
+ * 
+ * 
+ */

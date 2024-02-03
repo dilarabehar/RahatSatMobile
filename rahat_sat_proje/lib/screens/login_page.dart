@@ -65,7 +65,7 @@ class _LoginPage extends State<LoginPage> {
     });
   }
 
-  onGetProductSucces(List<ProductModelCategories>? products) {
+  onGetProductSucces(List<SoldListing>? products) {
     setState(() {
       if (products != null) {
         for (var product in products) {
