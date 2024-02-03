@@ -3,9 +3,13 @@ import 'package:rahat_sat_project/features/colors.dart';
 import 'package:rahat_sat_project/model/autho_response.dart';
 import 'package:rahat_sat_project/model/login_model.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/model/staff_model.dart';
+import 'package:rahat_sat_project/model/staff_permissions_model.dart';
 import 'package:rahat_sat_project/screens/home_page_a.dart';
-import 'package:rahat_sat_project/screens/product_sold.dart';
 import 'package:rahat_sat_project/screens/product_list.dart';
+import 'package:rahat_sat_project/screens/product_sold.dart';
+import 'package:rahat_sat_project/screens/staff_list.dart';
+import 'package:rahat_sat_project/screens/staff_permissions_list.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 void main() {
@@ -89,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
     } else {
       if (response is AuthResponse) {
-        getProductsList();         //buradan getiriyorum
+        getPermissionStaffs();         //buradan getiriyorum
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
@@ -117,11 +121,33 @@ class _MyHomePageState extends State<MyHomePage> {
         /*for (var product in products) {
           print(product.id); //burdan geliyor ürün özelliği
         }*/
-        Navigator.push(context, 
+        Navigator.push(context,
         MaterialPageRoute(builder: (context) => ProductView(inProducts: products)));
       }
     });
-  }  
+  }
+    void getPermissionStaffs() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getPermissionsStaff()
+          .then((response) => onGetPermissionStaffs(response));
+    });
+  }
+
+
+  onGetPermissionStaffs(List<StaffPermissionsListing>? permission) {
+    setState(() {
+      if (permission != null) {
+        /*for (var product in products) {
+          print(product.id); //burdan geliyor ürün özelliği
+        }*/
+        Navigator.push(context,
+        MaterialPageRoute(builder: (context) => StaffPermissionListView(inPermissions: permission)));
+      }
+    });
+  }
+
 
   void _passwordHidden() {
     setState(() {
@@ -155,9 +181,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+ void getAllStaff() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getAllStaff()
+          .then((response) => onGetStaffListSucces(response));
+    });
+  }
 
-
-
+ onGetStaffListSucces(List<StaffListing>? staffs) {
+    setState(() {
+      if (staffs != null) {
+        Navigator.push(context,
+        MaterialPageRoute(builder: (context) => StaffListView(inStaffList : staffs)));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

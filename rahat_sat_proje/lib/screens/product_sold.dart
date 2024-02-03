@@ -14,7 +14,7 @@ class ProductView extends StatefulWidget {
 
 class _ProductViewState extends State<ProductView> {
 
-_ProductViewState(inProducts); 
+_ProductViewState(inProducts);
 late List<SoldListing> products = widget.inProducts;
 
   @override
@@ -25,7 +25,7 @@ late List<SoldListing> products = widget.inProducts;
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("Satılan Ürünler"),
         ),
-        body: SingleChildScrollView(child: 
+        body: SingleChildScrollView(child:
         Column(children: products.map((product){
           return Padding(padding: EdgeInsets.all(3),
           child: Card(

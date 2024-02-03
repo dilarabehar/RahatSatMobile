@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:rahat_sat_project/model/autho_response.dart';
 import 'package:rahat_sat_project/model/login_model.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/model/staff_model.dart';
+import 'package:rahat_sat_project/model/staff_permissions_model.dart';
 import 'package:rahat_sat_project/services/data_service.dart';
 
 const String baseUrl = "http://127.0.0.1:8000/api/";
@@ -21,25 +23,25 @@ class UserClient {
       var data = jsonDecode(response.body);
       print(data);
 
-     if (data['token'] != null) {
-      var authResponse = AuthResponse(
-        message: data['message'],
-        token: data['token'],
-      );
+      if (data['token'] != null) {
+        var authResponse = AuthResponse(
+          message: data['message'],
+          token: data['token'],
+        );
 
-      print(authResponse);
+        print(authResponse);
 
-      await _dataService.addItem("token", authResponse.token);
-      return authResponse;
-    } else {
-      // Handle the case when the token is null
-      print("Token is null");
+        await _dataService.addItem("token", authResponse.token);
+        return authResponse;
+      } else {
+        // Handle the case when the token is null
+        print("Token is null");
+        return null;
+      }
+    } catch (error) {
+      print(error);
       return null;
     }
-  } catch (error) {
-    print(error);
-    return null;
-  }
   }
 
   Future<List<SoldListing>?> getProduct() async {
@@ -57,10 +59,11 @@ class UserClient {
         if (response.statusCode == 200) {
           List<SoldListing> productListingList = [];
 
-          for (var productListing in jsonDecode(response.body)["productListings"]) {
-          productListingList.add(SoldListing.fromJson(productListing));
-        }
-        return productListingList;
+          for (var productListing
+              in jsonDecode(response.body)["productListings"]) {
+            productListingList.add(SoldListing.fromJson(productListing));
+          }
+          return productListingList;
         }
       }
       return null;
@@ -73,12 +76,78 @@ class UserClient {
 
 
 
-Future<List<ProductListing>> fetchDataForPage(int page) async {
+  Future<List<ProductListing>> fetchDataForPage(int page) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl +
+              "products?page=$page"), // Include the page parameter in the URL
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        );
+
+        if (response.statusCode == 200) {
+          List<ProductListing> productListingList = [];
+
+          var products = jsonDecode(response.body)["products"];
+          if (products is List) {
+            for (var product in products) {
+              productListingList.add(ProductListing.fromJson(product));
+            }
+            return productListingList;
+          }
+        }
+      }
+      // Handle the case where the request fails
+      throw Exception('Failed to load data for page $page');
+    } catch (error) {
+      print(error);
+      // Handle any errors that occur during the process
+      throw Exception('Error fetching data for page $page: $error');
+    }
+  }
+
+Future<List<StaffListing>> getAllStaff() async {
   try {
     var token = await _dataService.tryGetItem("token");
     if (token != null) {
       var response = await http.get(
-        Uri.parse(baseUrl + "products?page=$page"), // Include the page parameter in the URL
+        Uri.parse(baseUrl + "staff"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+      if (response.statusCode == 200) {
+        List<StaffListing> staffListing = [];
+        var responseData = jsonDecode(response.body);
+        var allStaff = responseData["staff"] as List;
+
+        for (var staffData in allStaff) {
+          staffListing.add(StaffListing.fromJson(staffData));
+        }
+        return staffListing;
+      }
+    }
+  } catch (error) {
+    print(error);
+  }
+
+  // hata olursa veya istek başarısız olursa, boş bir liste döndürmek için yazdım
+    return [];
+}
+
+Future<List<StaffPermissionsListing>?> getPermissionsStaff() async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token != null) {
+      var response = await http.get(
+        Uri.parse(baseUrl + "staff/permissions"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -87,35 +156,30 @@ Future<List<ProductListing>> fetchDataForPage(int page) async {
       );
 
       if (response.statusCode == 200) {
-        List<ProductListing> productListingList = [];
+        List<StaffPermissionsListing> permissionStaffList = [];
 
-        var products = jsonDecode(response.body)["products"];
-        if (products is List) {
-          for (var product in products) {
-            productListingList.add(ProductListing.fromJson(product));
+        // JSON'dan doğrudan "productListings" alanını çekmek yerine, "StaffPermissionsModel" sınıfından çevirin
+        var responseData = jsonDecode(response.body);
+        if (responseData['permissions'] != null) {
+          for (var permission in responseData['permissions']) {
+            permissionStaffList.add(StaffPermissionsListing.fromJson(permission));
           }
-          return productListingList;
+          return permissionStaffList;
         }
       }
     }
-    // Handle the case where the request fails
-    throw Exception('Failed to load data for page $page');
+
+    return null;
   } catch (error) {
     print(error);
-    // Handle any errors that occur during the process
-    throw Exception('Error fetching data for page $page: $error');
+    return null;
   }
 }
+
+
+
+
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -131,15 +195,14 @@ Future<List<ProductListing>> fetchDataForPage(int page) async {
             return products;
           }
  * 
- * 
- * 
+ *
+ *
  *   createdAt: product["created_at"],
                   updatedAt: product["updated_at"],
                   id: product["id"],
                   name: product["name"],
                   image: product["image"],
- * 
- * 
+ *
  *  Future<List<ProductModelCategories>?> getProduct()async{
       try{
         var token = await _dataService.tryGetItem("token");
