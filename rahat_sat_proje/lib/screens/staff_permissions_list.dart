@@ -23,6 +23,7 @@ class _StaffPermissionListViewState extends State<StaffPermissionListView> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("Personel İzinleri"),
+          
         ),
         body: SingleChildScrollView(
           child: Column(

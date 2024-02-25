@@ -2,10 +2,15 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:rahat_sat_project/model/autho_response.dart';
+import 'package:rahat_sat_project/model/categories_model.dart';
 import 'package:rahat_sat_project/model/login_model.dart';
+import 'package:rahat_sat_project/model/markets_model.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/model/product_requests_model.dart';
+import 'package:rahat_sat_project/model/product_retailer_model.dart';
 import 'package:rahat_sat_project/model/staff_model.dart';
 import 'package:rahat_sat_project/model/staff_permissions_model.dart';
+import 'package:rahat_sat_project/model/users_model.dart';
 import 'package:rahat_sat_project/services/data_service.dart';
 
 const String baseUrl = "http://127.0.0.1:8000/api/";
@@ -72,9 +77,35 @@ class UserClient {
       return null;
     }
   }
+  
+  Future<List<SoldListing>?> getSalesProduct() async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl + "product-listings"),
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        );
+        if (response.statusCode == 200) {
+          List<SoldListing> productListingList = [];
 
-
-
+          for (var productListing
+              in jsonDecode(response.body)["productListings"]) {
+            productListingList.add(SoldListing.fromJson(productListing));
+          }
+          return productListingList;
+        }
+      }
+      return null;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
 
   Future<List<ProductListing>> fetchDataForPage(int page) async {
     try {
@@ -111,6 +142,42 @@ class UserClient {
     }
   }
 
+// Tüm kategorilerin sayfa sayfa yüklenmesi için
+// yükleme de değişiklik yapılacak burada bir hata var unutma !!!!!!!!
+Future<List<CategoriesModels>> fetchCategoriesForPage(int page) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl +
+              "categories?page=$page"), // Include the page parameter in the URL
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        );
+
+        if (response.statusCode == 200) {
+          List<CategoriesModels> categoriesListingList = [];
+
+          var categories = jsonDecode(response.body)["categories"];
+          if (categories is List) {
+            for (var allCategories in categories) {
+              categoriesListingList.add(CategoriesModels.fromJson(allCategories));
+            }
+            return categoriesListingList;
+          }
+        }
+      }
+      // Handle the case where the request fails
+      throw Exception('Failed to load data for page $page');
+    } catch (error) {
+      print(error);
+      // Handle any errors that occur during the process
+      throw Exception('Error fetching data for page $page: $error');
+    }
+  }
 Future<List<StaffListing>> getAllStaff() async {
   try {
     var token = await _dataService.tryGetItem("token");
@@ -176,16 +243,192 @@ Future<List<StaffPermissionsListing>?> getPermissionsStaff() async {
   }
 }
 
+Future<List<UsersModelsListing>> getAllUsers() async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token != null) {
+      var response = await http.get(
+        Uri.parse(baseUrl + "users"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+      if (response.statusCode == 200) {
+        List<UsersModelsListing> userListings = [];
+        var responseData = jsonDecode(response.body);
+        var allUsers = responseData["users"] as List;
 
+        for (var usersData in allUsers) {
+          userListings.add(UsersModelsListing.fromJson(usersData));
+        }
+        return userListings;
+      }
+    }
+  } catch (error) {
+    print(error);
+  }
+    return [];
+}
+Future<List<CategoriesModelsListing>> getAllCategories() async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token != null) {
+      var response = await http.get(
+        Uri.parse(baseUrl + "categories"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+      if (response.statusCode == 200) {
+        List<CategoriesModelsListing> categoriesListing = [];
+        var responseData = jsonDecode(response.body);
+        var allCategories = responseData["categories"] as List;
 
+        for (var categoriesData in allCategories) {
+          categoriesListing.add(CategoriesModelsListing.fromJson(categoriesData));
+        }
+        return categoriesListing;
+      }
+    }
+  } catch (error) {
+    print(error);
+  }
+    return [];
+}
+Future<List<ProductRequest>?> getProductsRequests() async {
+  try {
+    var token = await _dataService.tryGetItem("token");
 
+    if (token != null) {
+      var response = await http.get(
+        Uri.parse(baseUrl + "product-requests"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<ProductRequest> requestsListing = [];
+        var responseData = jsonDecode(response.body);
+
+        if (responseData.containsKey("productRequests") &&
+            responseData["productRequests"] is List) {
+          var allRequests = responseData["productRequests"] as List;
+
+          for (var requestsData in allRequests) {
+            requestsListing.add(ProductRequest.fromJson(requestsData));
+          }
+
+          return requestsListing;
+        } else {
+          // "product-requests" anahtarı yoksa veya değeri bir liste değilse
+          print("Error: 'product-requests' key is missing or not a list in response");
+          return [];
+        }
+      } else {
+        // Hata durumu
+        print("Error: ${response.statusCode} - ${response.reasonPhrase}");
+        return [];
+      }
+    }
+  } catch (error) {
+    // Hata yakalanırsa
+    print("Error: $error");
+    return [];
+  }
+
+  return [];
+}
+// product retailer service isteği
+Future<List<ProductRetailProductRetailPrices>?> getAllProductRetailerPrices() async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+
+    if (token != null) {
+      var response = await http.get(
+        Uri.parse(baseUrl + "product-retailer-prices"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<ProductRetailProductRetailPrices> requestsListing = [];
+        var responseData = jsonDecode(response.body);
+
+        if (responseData.containsKey("productRetailPrices") &&
+            responseData["productRetailPrices"] is List) {
+          var allRequests = responseData["productRetailPrices"] as List;
+
+          for (var requestsData in allRequests) {
+            requestsListing.add(ProductRetailProductRetailPrices.fromJson(requestsData));
+          }
+
+          return requestsListing;
+        } else {
+          // "product-requests" anahtarı yoksa veya değeri bir liste değilse
+          print("Error: 'product-retailer-prices' key is missing or not a list in response");
+          return [];
+        }
+      } else {
+        // Hata durumu
+        print("Error: ${response.statusCode} - ${response.reasonPhrase}");
+        return [];
+      }
+    }
+  } catch (error) {
+    // Hata yakalanırsa
+    print("Error: $error");
+    return [];
+  }
+
+  return [];
+}
+
+// get all markets
+Future<List<MarketsModelsListing>> getAllMarkets() async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token != null) {
+      var response = await http.get(
+        Uri.parse(baseUrl + "markets"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+      if (response.statusCode == 200) {
+        List<MarketsModelsListing> marketListings = [];
+        var responseData = jsonDecode(response.body);
+        var allMarkets = responseData["markets"] as List;
+
+        for (var marketsData in allMarkets) {
+          marketListings.add(MarketsModelsListing.fromJson(marketsData));
+        }
+        return marketListings;
+      }
+    }
+  } catch (error) {
+    print(error);
+  }
+    return [];
+}
 }
 
 
 
 
 /**
- * 
+ *
  * List<ProductModelCategoriesProducts> products = [];
           var productListings = jsonDecode(response.body)["productListings"];
           if (productListings is List) {
@@ -194,7 +437,7 @@ Future<List<StaffPermissionsListing>?> getPermissionsStaff() async {
             }
             return products;
           }
- * 
+ *
  *
  *
  *   createdAt: product["created_at"],

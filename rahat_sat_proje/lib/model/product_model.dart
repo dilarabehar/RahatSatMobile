@@ -11,7 +11,7 @@ class ProductModelCategoriesProducts {
   "image": "productImages/8680181001984.jpeg",
   "created_at": "2023-09-08T20:50:26.000000Z",
   "updated_at": "2023-09-08T21:03:42.000000Z"
-} 
+}
 */
 
   String? id;
@@ -72,7 +72,7 @@ class ProductModelCategories {
       "updated_at": "2023-09-08T21:03:42.000000Z"
     }
   ]
-} 
+}
 */
 
   String? id;
@@ -96,13 +96,13 @@ class ProductModelCategories {
     image = json['image']?.toString();
     createdAt = json['created_at']?.toString();
     updatedAt = json['updated_at']?.toString();
-  if (json['products'] != null) {
-  final v = json['products'];
-  final arr0 = <ProductModelCategoriesProducts>[];
-  v.forEach((v) {
-  arr0.add(ProductModelCategoriesProducts.fromJson(v));
-  });
-    products = arr0;
+    if (json['products'] != null) {
+      final v = json['products'];
+      final arr0 = <ProductModelCategoriesProducts>[];
+      v.forEach((v) {
+        arr0.add(ProductModelCategoriesProducts.fromJson(v));
+      });
+      products = arr0;
     }
   }
   Map<String, dynamic> toJson() {
@@ -115,9 +115,9 @@ class ProductModelCategories {
     if (products != null) {
       final v = products;
       final arr0 = [];
-  v?.forEach((v) {
-  arr0.add(v.toJson());
-  });
+      v?.forEach((v) {
+        arr0.add(v.toJson());
+      });
       data['products'] = arr0;
     }
     return data;
@@ -165,13 +165,13 @@ class ProductModel {
     this.page,
   });
   ProductModel.fromJson(Map<String, dynamic> json) {
-  if (json['categories'] != null) {
-  final v = json['categories'];
-  final arr0 = <ProductModelCategories>[];
-  v.forEach((v) {
-  arr0.add(ProductModelCategories.fromJson(v));
-  });
-    categories = arr0;
+    if (json['categories'] != null) {
+      final v = json['categories'];
+      final arr0 = <ProductModelCategories>[];
+      v.forEach((v) {
+        arr0.add(ProductModelCategories.fromJson(v));
+      });
+      categories = arr0;
     }
     total = json['total']?.toInt();
     perPage = json['perPage']?.toInt();
@@ -182,9 +182,9 @@ class ProductModel {
     if (categories != null) {
       final v = categories;
       final arr0 = [];
-  v?.forEach((v) {
-  arr0.add(v.toJson());
-  });
+      v?.forEach((v) {
+        arr0.add(v.toJson());
+      });
       data['categories'] = arr0;
     }
     data['total'] = total;
@@ -270,7 +270,6 @@ class Product {
   }
 }
 
-
 class ProductCategory {
   final String id;
   final String name;
@@ -331,4 +330,3 @@ class ProductListing {
     );
   }
 }
-

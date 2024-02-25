@@ -3,18 +3,18 @@ import 'package:rahat_sat_project/model/product_model.dart';
 
 //satılan
 
-class ProductView extends StatefulWidget {
+class ProductSoldView extends StatefulWidget {
   final List<SoldListing> inProducts;
   
-  const ProductView({Key? key, required this.inProducts}):super(key: key);
+  const ProductSoldView({Key? key, required this.inProducts}):super(key: key);
 
   @override
-  State<ProductView> createState() => _ProductViewState(inProducts);
+  State<ProductSoldView> createState() => _ProductSoldViewState(inProducts);
 }
 
-class _ProductViewState extends State<ProductView> {
+class _ProductSoldViewState extends State<ProductSoldView> {
 
-_ProductViewState(inProducts);
+_ProductSoldViewState(inProducts);
 late List<SoldListing> products = widget.inProducts;
 
   @override
@@ -58,6 +58,9 @@ late List<SoldListing> products = widget.inProducts;
                       children: <Widget>[
                         Text(product.product?.name ?? '',style: const TextStyle(color: Colors.black,fontSize:18.0,fontWeight: FontWeight.bold ),),
                           Text(product.product?.categoryId ?? '',style: TextStyle(color: Colors.grey),),
+                          Text(product.product?.barcode ?? '',style: TextStyle(color: Colors.grey),),
+                          Text(product.stockCount.toString() ?? '',style: TextStyle(color: Colors.grey),),
+
                       ],
                     ),
                       ],
