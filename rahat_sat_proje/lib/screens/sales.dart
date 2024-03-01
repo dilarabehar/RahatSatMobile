@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
+import 'package:super_bullet_list/bullet_list.dart';
 
 //productlar
 
 class SalesListView extends StatefulWidget {
   final List<SoldListing> allSoldProducts;
 
-  const SalesListView({Key? key, required this.allSoldProducts}) : super(key: key);
+  const SalesListView({Key? key, required this.allSoldProducts})
+      : super(key: key);
 
   @override
   State<SalesListView> createState() => _SalesListViewState();
@@ -55,66 +58,79 @@ class _SalesListViewState extends State<SalesListView> {
                 return Padding(
                   padding: EdgeInsets.all(3),
                   child: Card(
-                    elevation: 5.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2.0),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: 40,
-                                height: 40.0,
-                               // color: Colors.deepPurple,
-                                child: const Icon(Icons.person),
-                              ),
-                              const SizedBox(width: 10.0),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    product.product?.name ?? '',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    product.product?.barcode ?? '',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(
-                                    product.product?.categoryId ?? '',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(
-                                    product.stockCount.toString() ?? '',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ],
+                    elevation: 3,
+                    margin: EdgeInsets.all(8),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(16),
+                      title: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            child: Image.network(
+                              product.product?.image as String ??
+                                  "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+                              fit: BoxFit.fill,
+                            ),
                           ),
-                          Row(
-                            children: <Widget>[
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Düzenle"),
-                              ),
-                              const SizedBox(height: 2.0),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Sil"),
-                              ),
-                            ],
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  product.product?.name ?? '',
+                                  style: GoogleFonts.getFont('Lato'),
+                                ),
+                                SuperBulletList(
+                                    isOrdered: false,
+                                    gap: 4,
+                                    items: [
+                                      Text(
+                                        'Ürün Miktarı: ${product.unitCost}',
+                                        style: GoogleFonts.getFont('Lato',
+                                            fontStyle: FontStyle.normal,
+                                            textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w400)),
+                                      ),
+                                      Text(
+                                        'Birim Maliyeti: ${product.unitCost} TL',
+                                        style: GoogleFonts.getFont('Lato',
+                                            fontStyle: FontStyle.normal,
+                                            textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w400)),
+                                      ),
+                                      Text(
+                                        'KDV Oranı (%): ${product.taxRate}',
+                                        style: GoogleFonts.getFont('Lato',
+                                            fontStyle: FontStyle.normal,
+                                            textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w400)),
+                                      ),
+                                      Text(
+                                        'Kar Oranı (%): ${product.profitRate}',
+                                        style: GoogleFonts.getFont('Lato',
+                                            fontStyle: FontStyle.normal,
+                                            textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w400)),
+                                      ),
+                                      Text(
+                                        'Toplam Fiyat: ${product.totalPrice} TL',
+                                        style: GoogleFonts.getFont('Lato',
+                                            fontStyle: FontStyle.normal,
+                                            textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w400)),
+                                      ),
+                                      Text(
+                                        'Tarih: ${product.updatedAt} TL',
+                                        style: GoogleFonts.getFont('Lato',
+                                            fontStyle: FontStyle.normal,
+                                            textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w400)),
+                                      ),
+                                    ]),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -124,9 +140,8 @@ class _SalesListViewState extends State<SalesListView> {
               }).toList(),
             ),
           ),
-          
         ),
-      floatingActionButton: FloatingActionButton(backgroundColor: Colors.deepPurple,onPressed: (){},child: Icon(Icons.group_add),tooltip: "Yeni Personel Oluştur",)),
+      ),
     );
   }
 }

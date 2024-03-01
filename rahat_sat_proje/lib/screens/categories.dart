@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/categories_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
@@ -7,7 +9,8 @@ import 'package:rahat_sat_project/services/user_client.dart';
 class CategoriesListView extends StatefulWidget {
   final List<CategoriesModels> allCategories;
 
-  const CategoriesListView({Key? key, required this.allCategories}) : super(key: key);
+  const CategoriesListView({Key? key, required this.allCategories})
+      : super(key: key);
 
   @override
   State<CategoriesListView> createState() => _CategoriesListViewState();
@@ -25,7 +28,7 @@ class _CategoriesListViewState extends State<CategoriesListView> {
   }
 
   Future<void> loadMoreData() async {
-     // Assuming your API supports pagination with query parameters like 'page'
+    // Assuming your API supports pagination with query parameters like 'page'
     // Adjust your API request accordingly to fetch the next page
     var nextPage = currentPage + 1;
 
@@ -43,90 +46,89 @@ class _CategoriesListViewState extends State<CategoriesListView> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Satışlar"),
-        ),
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels ==
-                scrollInfo.metrics.maxScrollExtent) {
-              // Reached the bottom of the list, load more data
-              //deneme yorum
-              loadMoreData();
-            }
-            return false;
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: categories.map((categories) {
-                return Padding(
-                  padding: EdgeInsets.all(3),
-                  child: Card(
-                    elevation: 5.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2.0),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: 40,
-                                height: 40.0,
-                               // color: Colors.deepPurple,
-                                child: const Icon(Icons.person),
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: const Text("Tüm Kategoriler"),
+          ),
+          body: NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo.metrics.pixels ==
+                  scrollInfo.metrics.maxScrollExtent) {
+                loadMoreData();
+              }
+              return false;
+            },
+            child: SingleChildScrollView(
+              child: Column(
+                children: categories.map((categories) {
+                  return Padding(
+                    padding: EdgeInsets.all(3),
+                    child: Card(
+                      elevation: 3,
+                      margin: EdgeInsets.all(8),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16),
+                        title: Row(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 50,
+                              child: Image.network(
+                                categories.image as String ??
+                                    "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+                                fit: BoxFit.fill,
                               ),
-                              const SizedBox(width: 10.0),
-                              Column(
+                            ),
+                            const SizedBox(width: 15),
+                            Expanded(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
+                                children: [
                                   Text(
                                     categories.name ?? '',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    categories.updatedAt ?? '',
-                                    style: TextStyle(color: Colors.grey),
+                                    style: GoogleFonts.getFont('Lato'),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Düzenle"),
-                              ),
-                              const SizedBox(height: 2.0),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Sil"),
-                              ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () {},
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {},
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-          
-        ),
-      floatingActionButton: FloatingActionButton(backgroundColor: Colors.deepPurple,onPressed: (){},child: Icon(Icons.group_add),tooltip: "Yeni Personel Oluştur",)),
+          floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.menu_close,
+          spaceBetweenChildren: 10,
+          children: [
+            SpeedDialChild(
+              child: Container(
+              child:const Text("Yeni Kategori Oluştur",style: TextStyle(color: Colors.deepPurple),),
+              ),
+              onTap: (){}),
+            SpeedDialChild(
+              child: Container(
+              child:const Text("CSV ile Aktar",style: TextStyle(color: Colors.deepPurple),),
+              ),
+              onTap: (){})
+          ],
+        ),),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_retailer_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
@@ -45,7 +47,7 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
                 scrollInfo.metrics.maxScrollExtent) {
               // Reached the bottom of the list, load more data
               //deneme yorum
-              loadMoreData();
+              //loadMoreData();
             }
             return false;
           },
@@ -53,81 +55,88 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
             child: Column(
               children: retailers.map((retailer) {
                 return Padding(
-                  padding: EdgeInsets.all(3),
-                  child: Card(
-                    elevation: 5.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2.0),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
+                padding: EdgeInsets.all(3),
+                child: Card(
+                  elevation: 3,
+                  margin: EdgeInsets.all(8),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Row(
+                      children: [
+                      
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: 40,
-                                height: 40.0,
-                               // color: Colors.deepPurple,
-                                child: const Icon(Icons.person
-                                 ),
+                            children: [
+                              Text(
+                                retailer.product?.name ?? '',
+                                style: GoogleFonts.getFont('Lato'),
                               ),
-                              const SizedBox(width: 10.0),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                      retailer.product?.name ?? '',
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    retailer.retailerName ?? '',
-                                    style:const TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(
-                                    retailer.price.toString() ?? '',
-                                    style: const TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(
-                                    retailer.dataDate.toString() ?? '',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ],
+                             
+                              Text(
+                                  retailer.retailerName ?? '',
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                                 Text(
+                                  retailer.price.toString(),
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w400)),
+                                ),
+
+                                 Text(
+                                  retailer.dataDate ?? '',
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                              ],
                           ),
-                          Row(
-                            children: <Widget>[
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Düzenle"),
-                              ),
-                              const SizedBox(height: 2.0),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Sil"),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {},
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }).toList(),
+                ),
+              );}).toList(),
             ),
           ),
           
         ),
-      floatingActionButton: FloatingActionButton(backgroundColor: Colors.deepPurple,onPressed: (){},child: Icon(Icons.group_add),tooltip: "Yeni Personel Oluştur",)),
+     floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.menu_close,
+          spaceBetweenChildren: 10,
+          children: [
+            SpeedDialChild(
+              child: Container(
+              child:const Text("Yeni Ürün Perakende Fiyatı Oluştur",style: TextStyle(color: Colors.deepPurple),),
+              ),
+              onTap: (){}),
+            SpeedDialChild(
+              child: Container(
+              child:const Text("CSV ile Aktar",style: TextStyle(color: Colors.deepPurple),),
+              ),
+              onTap: (){})
+          ],
+        ),),
     );
   }
 }

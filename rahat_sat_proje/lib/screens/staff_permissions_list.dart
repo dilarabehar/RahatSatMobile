@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/staff_permissions_model.dart';
 
 class StaffPermissionListView extends StatefulWidget {
@@ -29,62 +30,52 @@ class _StaffPermissionListViewState extends State<StaffPermissionListView> {
           child: Column(
               children: permissions.map((permissions) {
             return Padding(
-              padding: EdgeInsets.all(3),
-              child: Card(
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(2.0)),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: 40.0,
-                            height: 40.0,
-                            child: const Icon(Icons.person),
-                          ),
-                          const SizedBox(width:10.0),
-                          Column(
+                padding: EdgeInsets.all(3),
+                child: Card(
+                  elevation: 3,
+                  margin: EdgeInsets.all(8),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Row(
+                      children: [
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
+                            children: [
                               Text(
                                 permissions.user?.name ?? '',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold),
+                                style: GoogleFonts.getFont('Lato'),
                               ),
-                              const Text("Tam Erişim",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
+                              Text(
+                                  "Tam Erişim",
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                              ],
                           ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Düzenle"),
-                          ),
-                          const SizedBox(width: 5.0),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          }).toList()),
+              );
+              }).toList()),
         ),
       ),
     );

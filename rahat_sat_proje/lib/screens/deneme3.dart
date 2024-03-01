@@ -1,36 +1,24 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rahat_sat_project/model/product_requests_model.dart';
-import 'package:rahat_sat_project/services/user_client.dart';
+import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/model/users_model.dart';
+import 'package:super_bullet_list/bullet_list.dart';
 
-//product requests
+class Deneme extends StatefulWidget {
+  final List<UsersModelsListing> allUserList;
 
-class ProductRequestView extends StatefulWidget {
-  final List<ProductRequest> inRequestsList;
-
-  const ProductRequestView({Key? key, required this.inRequestsList}) : super(key: key);
+  const Deneme({Key? key, required this.allUserList})
+      : super(key: key);
 
   @override
-  State<ProductRequestView> createState() => _ProductRequestViewState();
+  State<Deneme> createState() => _DenemeState();
 }
 
-class _ProductRequestViewState extends State<ProductRequestView> {
-  late List<ProductRequest> requests;
-  int currentPage = 1; // Initial page
-  UserClient userClient = new UserClient();
+class _DenemeState extends State<Deneme> {
+  //_DenemeState(inProducts);
+    late List<ProductRequest> requests;
 
-  @override
-  void initState() {
-    super.initState();
-    requests = widget.inRequestsList;
-  }
-
-  Future<void> loadMoreData() async {
-    var additionalData = await userClient.getProductsRequests();
-    setState(() {
-      requests.addAll(additionalData!);
-    });
-  }
+  late List<SoldListing> products = widget.inProducts;
 
   @override
   Widget build(BuildContext context) {
@@ -38,22 +26,12 @@ class _ProductRequestViewState extends State<ProductRequestView> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Ürün Talepleri"),
+          title: const Text("Satılan Ürünler"),
         ),
-        body: NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels ==
-                scrollInfo.metrics.maxScrollExtent) {
-              // Reached the bottom of the list, load more data
-              //deneme yorum
-              loadMoreData();
-            }
-            return false;
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: requests.map((request) {
-                return Padding(
+        body: SingleChildScrollView(
+          child: Column(
+            children: products.map((product) {
+              return Padding(
                 padding: EdgeInsets.all(3),
                 child: Card(
                   elevation: 3,
@@ -62,49 +40,62 @@ class _ProductRequestViewState extends State<ProductRequestView> {
                     contentPadding: EdgeInsets.all(16),
                     title: Row(
                       children: [
-                      
+                        Container(
+                          width: 50,
+                          height: 50,
+                          child: Image.asset(
+                            product.product?.image as String ??
+                                "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Cat_poster_1.jpg/1599px-Cat_poster_1.jpg",
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                         const SizedBox(width: 15),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                request.id ?? '',
+                                product.product?.name ?? '',
                                 style: GoogleFonts.getFont('Lato'),
                               ),
-                              Text(
-                                  request.marketid ?? '',
-                                  style: GoogleFonts.getFont('Lato',
-                                      fontStyle: FontStyle.normal,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                  Text(
-                                request.productname ?? '',
-                                style: GoogleFonts.getFont('Lato'),
-                              ),
-                              Text(
-                                  request.productbarcode ?? '',
+                              SuperBulletList(isOrdered: false, gap: 4, items: [
+                                Text(
+                                  'Stok Miktarı: ${product.stockCount}',
                                   style: GoogleFonts.getFont('Lato',
                                       fontStyle: FontStyle.normal,
                                       textStyle: const TextStyle(
                                           fontWeight: FontWeight.w400)),
                                 ),
                                 Text(
-                                  request.message ?? '',
+                                  'Birim Maliyeti: ${product.unitCost} TL',
                                   style: GoogleFonts.getFont('Lato',
                                       fontStyle: FontStyle.normal,
                                       textStyle: const TextStyle(
                                           fontWeight: FontWeight.w400)),
                                 ),
                                 Text(
-                                  request.createdat ?? '',
+                                  'KDV Oranı (%): ${product.taxRate}',
                                   style: GoogleFonts.getFont('Lato',
                                       fontStyle: FontStyle.normal,
                                       textStyle: const TextStyle(
                                           fontWeight: FontWeight.w400)),
                                 ),
-                              ],
+                                Text(
+                                  'Kar Oranı (%): ${product.profitRate}',
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                                Text(
+                                  'Toplam Fiyat: ${product.totalPrice} TL',
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                              ]),
+                            ],
                           ),
                         ),
                       ],
@@ -125,13 +116,11 @@ class _ProductRequestViewState extends State<ProductRequestView> {
                   ),
                 ),
               );
-             
-              }).toList(),
-            ),
+            }).toList(),
           ),
-          
         ),
-      floatingActionButton: FloatingActionButton(backgroundColor: Colors.deepPurple,onPressed: (){},child: Icon(Icons.group_add),tooltip: "Yeni Personel Oluştur",)),
+      ),
     );
   }
 }
+*/
