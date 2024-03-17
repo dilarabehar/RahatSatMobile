@@ -46,9 +46,9 @@ class _LoginPage extends State<LoginPage> {
       if (response is AuthResponse) {
         getProducts();
         Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
       }
     }
     setState(() {
@@ -204,30 +204,30 @@ class _LoginPage extends State<LoginPage> {
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                      width: Grock.width,
-                      child: ElevatedButton(
-                        onPressed: onLoginButtonPress,
-                        child: SizedBox(
-                          width: 150,
-                          height: 50,
-                          child: Container(decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12)
-                          ),
-                              child: const Center(
-                                child: Text(
-                                  "Giriş Yap",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.deepPurple,
-                                  ),
-                                ),
+                    width: Grock.width,
+                    child: ElevatedButton(
+                      onPressed: onLoginButtonPress,
+                      child: SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: const Center(
+                            child: Text(
+                              "Giriş Yap",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.deepPurple,
                               ),
                             ),
                           ),
                         ),
-                      )
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

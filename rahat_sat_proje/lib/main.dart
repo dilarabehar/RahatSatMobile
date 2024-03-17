@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
     } else {
       if (response is AuthResponse) {
-        getAllMarketsList(); //buradan getiriyorum
+        getSoldProducts(); //buradan getiriyorum
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),

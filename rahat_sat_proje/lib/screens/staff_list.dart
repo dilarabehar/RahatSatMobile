@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/staff_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
@@ -53,65 +52,64 @@ class _StaffListViewState extends State<StaffListView> {
             child: Column(
               children: staffs.map((staff) {
                 return Padding(
-                padding: EdgeInsets.all(3),
-                child: Card(
-                  elevation: 3,
-                  margin: EdgeInsets.all(8),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    title: Row(
-                      children: [
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                staff.name ?? '',
-                                style: GoogleFonts.getFont('Lato'),
-                              ),
+                  padding: EdgeInsets.all(3),
+                  child: Card(
+                    elevation: 3,
+                    margin: EdgeInsets.all(8),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(16),
+                      title: Row(
+                        children: [
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Text(
-                                   staff.email,
+                                  "Personel Adı: ${staff.name}" ?? '',
+                                  style: GoogleFonts.getFont('Lato'),
+                                ),
+                                Text(
+                                  "E-mail : ${staff.email}",
                                   style: GoogleFonts.getFont('Lato',
                                       fontStyle: FontStyle.normal,
                                       textStyle: const TextStyle(
                                           fontWeight: FontWeight.w400)),
                                 ),
-                                
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {},
-                        ),
-                      ],
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            }).toList(),
+                );
+              }).toList(),
+            ),
           ),
-        ),),
-        floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          spaceBetweenChildren: 10,
-          children: [
-            SpeedDialChild(
-              child: Container(
-              child:const Text("Yeni Personel Oluştur",style: TextStyle(color: Colors.deepPurple),),
-              ),
-              onTap: (){}),
-          ],
+        ),
+        floatingActionButton: Container(
+          child:  ElevatedButton(
+            style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),
+            ),
+            onPressed: () {},
+            child: Text("Yeni Personel Oluştur",
+            style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
+            ),
+          ),
         ),
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/markets_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
@@ -70,11 +69,11 @@ class _MarketsViewState extends State<MarketsView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    markets.name ?? '',
+                                    "Market Ad: ${markets.name}" ?? '',
                                     style: GoogleFonts.getFont('Lato'),
                                   ),
                                   Text(
-                                    markets.address ?? '',
+                                    "Adres: ${markets.address}" ?? '' ,
                                     style: GoogleFonts.getFont('Lato'),
                                   ),
                                 ],
@@ -103,17 +102,15 @@ class _MarketsViewState extends State<MarketsView> {
           ),
           
         ),
-      floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          spaceBetweenChildren: 10,
-          children: [
-            SpeedDialChild(
-              child: Container(
-              child:const Text("Yeni Market Oluştur",style: TextStyle(color: Colors.deepPurple),),
-              ),
-              onTap: (){}),
-        
-          ],
+      floatingActionButton: Container(
+          child:  ElevatedButton(
+            style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),
+            ),
+            onPressed: () {},
+            child: Text("Yeni Market Oluştur",
+            style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
+            ),
+          ),
         ),),
     );
   }

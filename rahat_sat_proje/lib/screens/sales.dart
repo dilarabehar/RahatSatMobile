@@ -46,9 +46,7 @@ class _SalesListViewState extends State<SalesListView> {
           onNotification: (ScrollNotification scrollInfo) {
             if (scrollInfo.metrics.pixels ==
                 scrollInfo.metrics.maxScrollExtent) {
-              // Reached the bottom of the list, load more data
-              //deneme yorum
-              loadMoreData();
+                loadMoreData();
             }
             return false;
           },

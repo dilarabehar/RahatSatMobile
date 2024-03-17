@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/categories_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
@@ -19,7 +18,7 @@ class CategoriesListView extends StatefulWidget {
 class _CategoriesListViewState extends State<CategoriesListView> {
   late List<CategoriesModels> categories;
   int currentPage = 1; // Initial page
-  UserClient userClient = new UserClient();
+  UserClient userClient = UserClient();
 
   @override
   void initState() {
@@ -46,89 +45,111 @@ class _CategoriesListViewState extends State<CategoriesListView> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: const Text("Tüm Kategoriler"),
-          ),
-          body: NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels ==
-                  scrollInfo.metrics.maxScrollExtent) {
-                loadMoreData();
-              }
-              return false;
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: categories.map((categories) {
-                  return Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Card(
-                      elevation: 3,
-                      margin: EdgeInsets.all(8),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(16),
-                        title: Row(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              child: Image.network(
-                                categories.image as String ??
-                                    "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
-                                fit: BoxFit.fill,
-                              ),
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text("Tüm Kategoriler"),
+        ),
+        body: NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels ==
+                scrollInfo.metrics.maxScrollExtent) {
+              loadMoreData();
+            }
+            return false;
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: categories.map((categories) {
+                return Padding(
+                  padding:const  EdgeInsets.all(3),
+                  child: Card(
+                    elevation: 3,
+                    margin:const EdgeInsets.all(8),
+                    child: ListTile(
+                      contentPadding:const EdgeInsets.all(16),
+                      title: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            child: Image.network(
+                              categories.image as String,
+                              fit: BoxFit.fill,
                             ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    categories.name ?? '',
-                                    style: GoogleFonts.getFont('Lato'),
-                                  ),
-                                ],
-                              ),
+                          ),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  categories.name ?? '',
+                                  style: GoogleFonts.getFont('Lato'),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon:const Icon(Icons.edit),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
-          floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          spaceBetweenChildren: 10,
+        ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SpeedDialChild(
-              child: Container(
-              child:const Text("Yeni Kategori Oluştur",style: TextStyle(color: Colors.deepPurple),),
+            Container(
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(192, 91, 67, 196)),
+                ),
+                onPressed: () {},
+                child: Text("Yeni Kategori Oluştur",
+                    style: GoogleFonts.getFont('Lato',
+                        fontStyle: FontStyle.normal,
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ))),
               ),
-              onTap: (){}),
-            SpeedDialChild(
-              child: Container(
-              child:const Text("CSV ile Aktar",style: TextStyle(color: Colors.deepPurple),),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Container(
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(192, 91, 67, 196)),
+                ),
+                onPressed: () {},
+                child: Text("CSV ile Aktar",
+                    style: GoogleFonts.getFont('Lato',
+                        fontStyle: FontStyle.normal,
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ))),
               ),
-              onTap: (){})
+            ),
           ],
-        ),),
+        ),
+      ),
     );
   }
 }

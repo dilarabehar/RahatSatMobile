@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
-import 'package:super_bullet_list/bullet_list.dart';
 
 class ProductSoldView extends StatefulWidget {
   final List<SoldListing> inProducts;
@@ -46,8 +44,7 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                           width: 50,
                           height: 50,
                           child: Image.network(
-                            product.product?.image as String ??
-                                "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+                            "https://uygulama.rahatsat.com/productImages/8690526095264.jpeg",
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -60,8 +57,8 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                                 product.product?.name ?? '',
                                 style: GoogleFonts.getFont('Lato'),
                               ),
-                              SuperBulletList(isOrdered: false, gap: 4, items: [
-                                Text(
+                              const SizedBox(height: 3),
+                               Text(
                                   'Stok Miktarı: ${product.stockCount}',
                                   style: GoogleFonts.getFont('Lato',
                                       fontStyle: FontStyle.normal,
@@ -96,7 +93,7 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                                       textStyle: const TextStyle(
                                           fontWeight: FontWeight.w400)),
                                 ),
-                              ]),
+                              
                             ],
                           ),
                         ),
@@ -121,20 +118,29 @@ class _ProductSoldViewState extends State<ProductSoldView> {
             }).toList(),
           ),
         ),
-        floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          spaceBetweenChildren: 10,
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SpeedDialChild(
-              child: Container(
-              child:const Text("Yeni Ürün Sat",style: TextStyle(color: Colors.deepPurple),),
+            Container(
+              child:  ElevatedButton(
+                style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),
+                ),
+                onPressed: () {},
+                child: Text("Yeni Ürün Sat",
+                style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
+                ),
               ),
-              onTap: (){}),
-            SpeedDialChild(
-              child: Container(
-              child:const Text("Oranları Güncelle",style: TextStyle(color: Colors.deepPurple),),
+            ),
+            const SizedBox(width: 5,),
+             Container(
+              child:  ElevatedButton(
+                style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),),
+                onPressed: () {},
+                child: Text("Oranları Güncelle",
+                style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
+                ),
               ),
-              onTap: (){})
+            ),
           ],
         ),
       ),

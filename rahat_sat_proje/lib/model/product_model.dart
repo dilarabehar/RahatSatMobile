@@ -263,7 +263,7 @@ class Product {
       categoryId: json['category_id']?.toString(),
       name: json['name']?.toString(),
       barcode: json['barcode']?.toString(),
-      image: json['image']?.toString(),
+      image: json['image'].toString(),
       createdAt: json['created_at']?.toString(),
       updatedAt: json['updated_at']?.toString(),
     );
