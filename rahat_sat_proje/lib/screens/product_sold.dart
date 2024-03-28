@@ -1,12 +1,13 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/screens/product_edits_page.dart';
 
 class ProductSoldView extends StatefulWidget {
   final List<SoldListing> inProducts;
 
-  const ProductSoldView({Key? key, required this.inProducts})
-      : super(key: key);
+  const ProductSoldView({Key? key, required this.inProducts}) : super(key: key);
 
   @override
   State<ProductSoldView> createState() => _ProductSoldViewState();
@@ -58,42 +59,41 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                                 style: GoogleFonts.getFont('Lato'),
                               ),
                               const SizedBox(height: 3),
-                               Text(
-                                  'Stok Miktarı: ${product.stockCount}',
-                                  style: GoogleFonts.getFont('Lato',
-                                      fontStyle: FontStyle.normal,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                Text(
-                                  'Birim Maliyeti: ${product.unitCost} TL',
-                                  style: GoogleFonts.getFont('Lato',
-                                      fontStyle: FontStyle.normal,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                Text(
-                                  'KDV Oranı (%): ${product.taxRate}',
-                                  style: GoogleFonts.getFont('Lato',
-                                      fontStyle: FontStyle.normal,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                Text(
-                                  'Kar Oranı (%): ${product.profitRate}',
-                                  style: GoogleFonts.getFont('Lato',
-                                      fontStyle: FontStyle.normal,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                                Text(
-                                  'Toplam Fiyat: ${product.totalPrice} TL',
-                                  style: GoogleFonts.getFont('Lato',
-                                      fontStyle: FontStyle.normal,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
-                                ),
-                              
+                              Text(
+                                'Stok Miktarı: ${product.stockCount}',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'Birim Maliyeti: ${product.unitCost} TL',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'KDV Oranı (%): ${product.taxRate}',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'Kar Oranı (%): ${product.profitRate}',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'Toplam Fiyat: ${product.totalPrice} TL',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
                             ],
                           ),
                         ),
@@ -104,11 +104,29 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.edit),
-                          onPressed: () {},
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ProductsEdit())),
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {},
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.warning,
+                              animType: AnimType.bottomSlide,
+                              showCloseIcon: true,
+                              title: "Dikkat",
+                              desc: "Ürünü silmek istediğinizden emin misiniz?",
+                              btnCancelOnPress: () {
+                                Navigator.pop(context);
+                              },
+                              btnOkOnPress: () {},
+                              btnCancelText: "Hayır",
+                              btnOkText: "Evet",
+                            ).show();
+                          },
                         ),
                       ],
                     ),
@@ -122,23 +140,36 @@ class _ProductSoldViewState extends State<ProductSoldView> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Container(
-              child:  ElevatedButton(
-                style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(192, 91, 67, 196)),
                 ),
                 onPressed: () {},
                 child: Text("Yeni Ürün Sat",
-                style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
-                ),
+                    style: GoogleFonts.getFont('Lato',
+                        fontStyle: FontStyle.normal,
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ))),
               ),
             ),
-            const SizedBox(width: 5,),
-             Container(
-              child:  ElevatedButton(
-                style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),),
+            const SizedBox(
+              width: 5,
+            ),
+            Container(
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(192, 91, 67, 196)),
+                ),
                 onPressed: () {},
                 child: Text("Oranları Güncelle",
-                style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
-                ),
+                    style: GoogleFonts.getFont('Lato',
+                        fontStyle: FontStyle.normal,
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ))),
               ),
             ),
           ],
