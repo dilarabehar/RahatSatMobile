@@ -11,7 +11,9 @@ class ProductsEdit extends StatefulWidget {
 enum RadioButtonOptions { birimMaliyet, toplamFiyat, karOrani }
 
 class _ProductsEditState extends State<ProductsEdit> {
+ 
   RadioButtonOptions? _character = RadioButtonOptions.birimMaliyet;
+  
   TextEditingController kdvOrani = TextEditingController();
   TextEditingController urunStokMiktariController = TextEditingController();
   TextEditingController urunBirimMaliyetController = TextEditingController();
