@@ -124,6 +124,7 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                                 Navigator.pop(context);
                               },
                               btnOkOnPress: () {},
+                              
                               btnCancelText: "Hayır",
                               btnOkText: "Evet",
                             ).show();
