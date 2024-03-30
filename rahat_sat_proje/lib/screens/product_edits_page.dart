@@ -11,15 +11,14 @@ class ProductsEdit extends StatefulWidget {
 enum RadioButtonOptions { birimMaliyet, toplamFiyat, karOrani }
 
 class _ProductsEditState extends State<ProductsEdit> {
- 
   RadioButtonOptions? _character = RadioButtonOptions.birimMaliyet;
-  
+
   TextEditingController kdvOrani = TextEditingController();
   TextEditingController urunStokMiktariController = TextEditingController();
   TextEditingController urunBirimMaliyetController = TextEditingController();
   TextEditingController karOraniController = TextEditingController();
   TextEditingController urunToplamFiyatController = TextEditingController();
-  
+
   bool disableUrunStokMiktari = false;
   bool disableUrunBirimMaliyet = false;
   bool disableKDV = false;
@@ -198,28 +197,28 @@ class _ProductsEditState extends State<ProductsEdit> {
                 children: [
                   ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Color.fromARGB(209, 168, 42, 218)),
-                      ),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromARGB(209, 168, 42, 218)),
+                    ),
                     onPressed: () {},
                     child: const Text("DÜZENLE"),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
                     style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(const Color.fromARGB(255, 192, 6, 6)),
-                      ),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromARGB(255, 192, 6, 6)),
+                    ),
                     onPressed: () {},
                     child: const Text("SİL"),
                   ),
                   const SizedBox(width: 8),
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.grey.shade800),
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.grey.shade800),
                       ),
                       onPressed: () {
                         Navigator.pop(context);

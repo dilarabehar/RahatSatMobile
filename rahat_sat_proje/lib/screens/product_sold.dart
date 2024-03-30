@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 import 'package:rahat_sat_project/screens/product_edits_page.dart';
+import 'package:rahat_sat_project/screens/rate_update_page.dart';
 
 class ProductSoldView extends StatefulWidget {
   final List<SoldListing> inProducts;
@@ -149,6 +150,7 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                 child: Text("Yeni Ürün Sat",
                     style: GoogleFonts.getFont('Lato',
                         fontStyle: FontStyle.normal,
+                        fontSize: 15,
                         textStyle: const TextStyle(
                           color: Colors.white,
                         ))),
@@ -163,10 +165,14 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                   backgroundColor: MaterialStatePropertyAll(
                       Color.fromARGB(192, 91, 67, 196)),
                 ),
-                onPressed: () {},
+                onPressed: () { Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RateUpdate()));},
                 child: Text("Oranları Güncelle",
                     style: GoogleFonts.getFont('Lato',
                         fontStyle: FontStyle.normal,
+                        fontSize: 15,
                         textStyle: const TextStyle(
                           color: Colors.white,
                         ))),

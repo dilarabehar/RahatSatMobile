@@ -11,12 +11,12 @@ import 'package:rahat_sat_project/model/staff_model.dart';
 import 'package:rahat_sat_project/model/staff_permissions_model.dart';
 import 'package:rahat_sat_project/model/users_model.dart';
 import 'package:rahat_sat_project/screens/categories.dart';
+import 'package:rahat_sat_project/screens/home_page_a.dart';
 import 'package:rahat_sat_project/screens/markets.dart';
 import 'package:rahat_sat_project/screens/product_list.dart';
 import 'package:rahat_sat_project/screens/product_requests.dart';
 import 'package:rahat_sat_project/screens/product_retailer_price_screen.dart';
 import 'package:rahat_sat_project/screens/product_sold.dart';
-import 'package:rahat_sat_project/screens/rate_update_page.dart';
 import 'package:rahat_sat_project/screens/sales.dart';
 import 'package:rahat_sat_project/screens/staff_list.dart';
 import 'package:rahat_sat_project/screens/staff_permissions_list.dart';
@@ -95,10 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
           .showSnackBar(const SnackBar(content: Text("LOGIN FAILURE")));
     } else {
       if (response is AuthResponse) {
-       // getSoldProducts(); //buradan getiriyorum
+        getSoldProducts(); //buradan getiriyorum
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const RateUpdate()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     }

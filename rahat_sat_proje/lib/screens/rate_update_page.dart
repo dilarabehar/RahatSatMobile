@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +16,6 @@ const List<String> _list = <String>['One', 'Two', 'Three', 'Four'];
 class _RateUpdateState extends State<RateUpdate> {
   RadioButtonOptions? _character = RadioButtonOptions.KDV;
   TextEditingController selectedValue = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -41,16 +38,17 @@ class _RateUpdateState extends State<RateUpdate> {
             child: CustomDropdown<String>.search(
               items: _list,
               onChanged: (value) {
-                log('changing value to: $value' as num);
+                print('changing value to: $value');
               },
               hintText: 'Kategori Seçiniz',
-              excludeSelected: true,
-
+              excludeSelected: false, // seçilen öğe tekrar görüntülenmesin mi??
+              hideSelectedFieldWhenExpanded:
+                  true, //true ise seçilen özellik gizlensin
               decoration: CustomDropdownDecoration(
+                  expandedFillColor: Theme.of(context).colorScheme.background,
                   closedFillColor: Theme.of(context).colorScheme.scrim),
-                  closedHeaderPadding: const EdgeInsets.all(15),
-                 
-         ),
+              closedHeaderPadding: const EdgeInsets.all(15),
+            ),
           ),
           const SizedBox(
             height: 5,
@@ -107,8 +105,8 @@ class _RateUpdateState extends State<RateUpdate> {
                 children: [
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(const
-                          Color.fromARGB(209, 168, 42, 218)),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          const Color.fromARGB(209, 168, 42, 218)),
                     ),
                     onPressed: () {},
                     child: const Text("GÜNCELLE"),
