@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
@@ -49,14 +50,12 @@ class _ProductListViewState extends State<ProductListView> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Satılan Ürünler"),
+          title: const Text("Tüm Ürünler"),
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
             if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-              // Reached the bottom of the list, load more data
-              //deneme yorum
-              loadMoreData();
+                loadMoreData();
             }
             return false;
           },
@@ -64,71 +63,89 @@ class _ProductListViewState extends State<ProductListView> {
             child: Column(
               children: products.map((product) {
                 return Padding(
-                  padding: EdgeInsets.all(3),
-                  child: Card(
-                    elevation: 5.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(2.0),
-                    ),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
+                padding: EdgeInsets.all(3),
+                child: Card(
+                  elevation: 3,
+                  margin: EdgeInsets.all(8),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          child: Image.network(
+                            product.image as String ??
+                                "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: 40.0,
-                                height: 40.0,
-                                color: Colors.deepPurple,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.deepPurple,
-                                  foregroundColor: Colors.deepPurple,
-                                  backgroundImage: NetworkImage(
-                                      product.image as String ??
-                                          'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Cat_poster_1.jpg/1599px-Cat_poster_1.jpg'),
+                            children: [
+                              Text(
+                                product.name ?? '',
+                                style: GoogleFonts.getFont('Lato'),
+                              ),
+                              Text(
+                                  product.category.name,
+                                  style: GoogleFonts.getFont('Lato',
+                                      fontStyle: FontStyle.normal,
+                                      textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w400)),
                                 ),
-                              ),
-                              const SizedBox(width: 5.0),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    product.name ?? '',
-                                    style: const TextStyle(color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    product.categoryId ?? '',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ),
-                            ],
+                              ],
                           ),
-                          Row(
-                            children: <Widget>[
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Düzenle"),
-                              ),
-                              const SizedBox(width: 5.0),
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: const Text("Sil"),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {},
+                        ),
+                      ],
                     ),
                   ),
-                );
+                ),
+              );
               }).toList(),
             ),
           ),
+          
+        ),
+         floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              child:  ElevatedButton(
+                style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),
+                ),
+                onPressed: () {},
+                child: Text("Yeni Ürün Oluştur",
+                style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
+                ),
+              ),
+            ),
+            const SizedBox(width: 5,),
+             Container(
+              child:  ElevatedButton(
+                style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),),
+                onPressed: () {},
+                child: Text("CSV ile Aktar",
+                style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

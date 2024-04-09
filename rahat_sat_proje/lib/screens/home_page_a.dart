@@ -27,8 +27,12 @@ class _HomePage extends State<HomePage> {
 
   Widget _buildListTile(IconData icon, String title,Widget destinationScreen) {
     return ListTile(
-      onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => destinationScreen)),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destinationScreen),
+        );
+      },
       leading: SizedBox(
         height: 34,
         width: 34,

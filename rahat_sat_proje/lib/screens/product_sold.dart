@@ -1,21 +1,26 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/screens/product_edits_page.dart';
+import 'package:rahat_sat_project/screens/rate_update_page.dart';
 
-//satılan
-
-class ProductView extends StatefulWidget {
+class ProductSoldView extends StatefulWidget {
   final List<SoldListing> inProducts;
-  
-  const ProductView({Key? key, required this.inProducts}):super(key: key);
+
+  const ProductSoldView({Key? key, required this.inProducts}) : super(key: key);
 
   @override
-  State<ProductView> createState() => _ProductViewState(inProducts);
+  State<ProductSoldView> createState() => _ProductSoldViewState();
 }
 
-class _ProductViewState extends State<ProductView> {
-
-_ProductViewState(inProducts); 
-late List<SoldListing> products = widget.inProducts;
+class _ProductSoldViewState extends State<ProductSoldView> {
+  late List<SoldListing> products;
+  @override
+  void initState() {
+    super.initState();
+    products = widget.inProducts;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,64 +30,160 @@ late List<SoldListing> products = widget.inProducts;
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text("Satılan Ürünler"),
         ),
-        body: SingleChildScrollView(child: 
-        Column(children: products.map((product){
-          return Padding(padding: EdgeInsets.all(3),
-          child: Card(
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(2.0)
-              ),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                         Container(
-                      width: 40.0,
-                      height: 40.0,
-                      color: Colors.deepPurple,
-                      child: CircleAvatar(backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.deepPurple,
-                      backgroundImage: NetworkImage(product.product?.image as String ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Cat_poster_1.jpg/1599px-Cat_poster_1.jpg' ),
-                      ) ,
-                    ),
-                    const SizedBox(width: 5.0),
-                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(product.product?.name ?? '',style: const TextStyle(color: Colors.black,fontSize:18.0,fontWeight: FontWeight.bold ),),
-                          Text(product.product?.categoryId ?? '',style: TextStyle(color: Colors.grey),),
+        body: SingleChildScrollView(
+          child: Column(
+            children: products.map((product) {
+              return Padding(
+                padding: EdgeInsets.all(3),
+                child: Card(
+                  elevation: 3,
+                  margin: EdgeInsets.all(8),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          child: Image.network(
+                            "https://uygulama.rahatsat.com/productImages/8690526095264.jpeg",
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.product?.name ?? '',
+                                style: GoogleFonts.getFont('Lato'),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                'Stok Miktarı: ${product.stockCount}',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'Birim Maliyeti: ${product.unitCost} TL',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'KDV Oranı (%): ${product.taxRate}',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'Kar Oranı (%): ${product.profitRate}',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                              Text(
+                                'Toplam Fiyat: ${product.totalPrice} TL',
+                                style: GoogleFonts.getFont('Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ProductsEdit())),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.warning,
+                              animType: AnimType.bottomSlide,
+                              showCloseIcon: true,
+                              title: "Dikkat",
+                              desc: "Ürünü silmek istediğinizden emin misiniz?",
+                              btnCancelOnPress: () {
+                                Navigator.pop(context);
+                              },
+                              btnOkOnPress: () {},
+                              
+                              btnCancelText: "Hayır",
+                              btnOkText: "Evet",
+                            ).show();
+                          },
+                        ),
                       ],
                     ),
-                    Row(
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Düzenle"),
                   ),
-                  const SizedBox(width: 5.0),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Sil"),
-                  ),],),
-                  ],
                 ),
-                
+              );
+            }).toList(),
+          ),
+        ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(192, 91, 67, 196)),
+                ),
+                onPressed: () {},
+                child: Text("Yeni Ürün Sat",
+                    style: GoogleFonts.getFont('Lato',
+                        fontStyle: FontStyle.normal,
+                        fontSize: 15,
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ))),
               ),
-            ),);
-        }).toList()),),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Container(
+              child: ElevatedButton(
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                      Color.fromARGB(192, 91, 67, 196)),
+                ),
+                onPressed: () { Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RateUpdate()));},
+                child: Text("Oranları Güncelle",
+                    style: GoogleFonts.getFont('Lato',
+                        fontStyle: FontStyle.normal,
+                        fontSize: 15,
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ))),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-//                                  7QSNTzh86EePCu3K
-//          admin@rahatsat.com
+// 7QSNTzh86EePCu3K
+// admin@rahatsat.com
