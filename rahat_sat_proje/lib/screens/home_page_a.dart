@@ -8,6 +8,7 @@ import 'package:rahat_sat_project/model/product_retailer_model.dart';
 import 'package:rahat_sat_project/model/staff_model.dart';
 import 'package:rahat_sat_project/model/staff_permissions_model.dart';
 import 'package:rahat_sat_project/model/users_model.dart';
+import 'package:rahat_sat_project/screens/barcode.dart';
 import 'package:rahat_sat_project/screens/categories.dart';
 import 'package:rahat_sat_project/screens/login_page.dart';
 import 'package:rahat_sat_project/screens/markets.dart';
@@ -241,6 +242,33 @@ void onGetMarketsListRequests(List<MarketsModelsListing>? markets) {
     });
   }
 
+//Barcode
+void getBarcodeList() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .fetchDataForPage(1)
+          .then((response) => onGetBarcodeListSucces(response));
+    });
+  }
+
+
+  onGetBarcodeListSucces(List<ProductListing>? barcode) {
+    setState(() {
+      if (barcode != null) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ProductScreen()));
+      }
+    });
+  }
+
+
+
+
+
 // Tüm Personeller
     void getAllStaff() {
     setState(() {
@@ -328,13 +356,12 @@ Widget _buildListTile(IconData icon, String title, void Function() onTap) {
                   ),
                 ),
                //_buildListTile(Icons.home, "Ana Sayfa",HomePage()),
-               //_buildListTile(Icons.shopping_bag, "Satılan Ürünler",Products()),
                _buildListTile(Icons.person, "Personeller",getAllStaff),
                _buildListTile(Icons.person_off, "Personel İzinleri",getPermissionStaffs),
                _buildListTile(Icons.shopping_bag, "Satılan Ürünler",getSoldProducts),
                _buildListTile(Icons.share_location_rounded, "Satışlar",getAllSales),
                //_buildListTile(Icons.bar_chart_outlined, "Satış İstatikleri",Products()),
-               //_buildListTile(Icons.pending_actions, "Satış Ekranı",Products()),
+               _buildListTile(Icons.pending_actions, "Satış Ekranı",getBarcodeList),
                 const Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Align(
