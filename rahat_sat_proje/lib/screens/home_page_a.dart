@@ -24,7 +24,7 @@ import 'package:rahat_sat_project/services/user_client.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-  
+
   get userClient => UserClient();
 
   @override
@@ -37,7 +37,7 @@ class _HomePage extends State<HomePage> {
 
   // Satılan Ürünler
 
-    void getSoldProducts() {
+  void getSoldProducts() {
     setState(() {
       _login = true;
       widget.userClient
@@ -46,7 +46,7 @@ class _HomePage extends State<HomePage> {
     });
   }
 
-    onGetSoldProductSucces(List<SoldListing>? products) {
+  onGetSoldProductSucces(List<SoldListing>? products) {
     setState(() {
       if (products != null) {
         /*for (var product in products) {
@@ -84,8 +84,9 @@ class _HomePage extends State<HomePage> {
       }
     });
   }
- //Personel İzinleri
-    void getPermissionStaffs() {
+
+  //Personel İzinleri
+  void getPermissionStaffs() {
     setState(() {
       _login = true;
       widget.userClient
@@ -93,6 +94,7 @@ class _HomePage extends State<HomePage> {
           .then((response) => onGetPermissionStaffs(response));
     });
   }
+
   onGetPermissionStaffs(List<StaffPermissionsListing>? permission) {
     setState(() {
       if (permission != null) {
@@ -104,8 +106,9 @@ class _HomePage extends State<HomePage> {
       }
     });
   }
- // Kullanıcılar
-     void getAllUsers() {
+
+  // Kullanıcılar
+  void getAllUsers() {
     setState(() {
       _login = true;
       widget.userClient
@@ -113,6 +116,7 @@ class _HomePage extends State<HomePage> {
           .then((response) => onGetAllUsers(response));
     });
   }
+
   onGetAllUsers(List<UsersModelsListing>? userListings) {
     setState(() {
       if (userListings != null) {
@@ -124,13 +128,13 @@ class _HomePage extends State<HomePage> {
       }
     });
   }
+
   // Kategoriler
-     void getAllCategoriesList() {
+  void getAllCategoriesList() {
     setState(() {
       _login = true;
-      widget.userClient
-          .fetchCategoriesForPage(1)
-          .then((response) => onGetCategoriesSucces(response.cast<CategoriesModels>()));
+      widget.userClient.fetchCategoriesForPage(1).then((response) =>
+          onGetCategoriesSucces(response.cast<CategoriesModels>()));
     });
   }
 
@@ -151,73 +155,76 @@ class _HomePage extends State<HomePage> {
 
   // Ürün Talepleri
 
-    void getProductRequestList() {
-  setState(() {
-    _login = true;
-    widget.userClient
-        .getProductsRequests()
-        .then((response) => onGetProductRequests(response));
-  });
-}
+  void getProductRequestList() {
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getProductsRequests()
+          .then((response) => onGetProductRequests(response));
+    });
+  }
 
-void onGetProductRequests(List<ProductRequest>? products) {
-  setState(() {
-    if (products != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProductRequestView(inRequestsList: products),
-        ),
-      );
-    }
-  });
-}
+  void onGetProductRequests(List<ProductRequest>? products) {
+    setState(() {
+      if (products != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductRequestView(inRequestsList: products),
+          ),
+        );
+      }
+    });
+  }
 
 // Ürün Tedarikçi Fiyatları
 
   void getProductsRetailsPrices() {
-  setState(() {
-    _login = true;
-    widget.userClient
-        .getAllProductRetailerPrices()
-        .then((response) => onGetProductRetailsPricesRequests(response));
-  });
-}
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getAllProductRetailerPrices()
+          .then((response) => onGetProductRetailsPricesRequests(response));
+    });
+  }
 
-void onGetProductRetailsPricesRequests(List<ProductRetailProductRetailPrices>? retailer) {
-  setState(() {
-    if (retailer != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProductRetailerPriceView(inRetailerPrice: retailer),
-        ),
-      );
-    }
-  });
-}
+  void onGetProductRetailsPricesRequests(
+      List<ProductRetailProductRetailPrices>? retailer) {
+    setState(() {
+      if (retailer != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ProductRetailerPriceView(inRetailerPrice: retailer),
+          ),
+        );
+      }
+    });
+  }
+
 // Marketler
   void getAllMarketsList() {
-  setState(() {
-    _login = true;
-    widget.userClient
-        .getAllMarkets()
-        .then((response) => onGetMarketsListRequests(response));
-  });
-}
+    setState(() {
+      _login = true;
+      widget.userClient
+          .getAllMarkets()
+          .then((response) => onGetMarketsListRequests(response));
+    });
+  }
 
-void onGetMarketsListRequests(List<MarketsModelsListing>? markets) {
-  setState(() {
-    if (markets != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MarketsView(inMarketList: markets),
-        ),
-      );
-    }
-  });
-}
+  void onGetMarketsListRequests(List<MarketsModelsListing>? markets) {
+    setState(() {
+      if (markets != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MarketsView(inMarketList: markets),
+          ),
+        );
+      }
+    });
+  }
 // Ürünler
 
   void getProductsList() {
@@ -228,7 +235,6 @@ void onGetMarketsListRequests(List<MarketsModelsListing>? markets) {
           .then((response) => onGetProductListSucces(response));
     });
   }
-
 
   onGetProductListSucces(List<ProductListing>? products) {
     setState(() {
@@ -243,7 +249,7 @@ void onGetMarketsListRequests(List<MarketsModelsListing>? markets) {
   }
 
 //Barcode
-void getBarcodeList() {
+  void getBarcodeList() {
     setState(() {
       _login = true;
       widget.userClient
@@ -252,25 +258,17 @@ void getBarcodeList() {
     });
   }
 
-
   onGetBarcodeListSucces(List<ProductListing>? barcode) {
     setState(() {
       if (barcode != null) {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    ProductScreen()));
+            context, MaterialPageRoute(builder: (context) => ProductScreen()));
       }
     });
   }
 
-
-
-
-
 // Tüm Personeller
-    void getAllStaff() {
+  void getAllStaff() {
     setState(() {
       _login = true;
       widget.userClient
@@ -290,7 +288,6 @@ void getBarcodeList() {
     });
   }
 
-
   void setFullScreen(bool isFullScreen) {
     setState(() {
       _isFullScreen = isFullScreen;
@@ -303,20 +300,17 @@ void getBarcodeList() {
     });
   }
 
-
-
-Widget _buildListTile(IconData icon, String title, void Function() onTap) {
-  return ListTile(
-    onTap: onTap, // Doğrudan getSoldProducts fonksiyonunu buraya ata
-    leading: SizedBox(
-      height: 34,
-      width: 34,
-      child: Icon(icon),
-    ),
-    title: Text(title),
-  );
-}
-
+  Widget _buildListTile(IconData icon, String title, void Function() onTap) {
+    return ListTile(
+      onTap: onTap, // Doğrudan getSoldProducts fonksiyonunu buraya ata
+      leading: SizedBox(
+        height: 34,
+        width: 34,
+        child: Icon(icon),
+      ),
+      title: Text(title),
+    );
+  }
 
   Widget _drawerWidget() {
     return Drawer(
@@ -355,13 +349,18 @@ Widget _buildListTile(IconData icon, String title, void Function() onTap) {
                     ),
                   ),
                 ),
-               //_buildListTile(Icons.home, "Ana Sayfa",HomePage()),
-               _buildListTile(Icons.person, "Personeller",getAllStaff),
-               _buildListTile(Icons.person_off, "Personel İzinleri",getPermissionStaffs),
-               _buildListTile(Icons.shopping_bag, "Satılan Ürünler",getSoldProducts),
-               _buildListTile(Icons.share_location_rounded, "Satışlar",getAllSales),
-               //_buildListTile(Icons.bar_chart_outlined, "Satış İstatikleri",Products()),
-               _buildListTile(Icons.pending_actions, "Satış Ekranı",getBarcodeList),
+                //cmd
+                // _buildListTile(Icons.home, "Ana Sayfa",HomePage()),
+                _buildListTile(
+                    Icons.shopping_bag, "Satılan Ürünler", getSoldProducts),
+                _buildListTile(Icons.person, "Personeller", getAllStaff),
+                _buildListTile(
+                    Icons.person_off, "Personel İzinleri", getPermissionStaffs),
+                _buildListTile(
+                    Icons.share_location_rounded, "Satışlar", getAllSales),
+                //_buildListTile(Icons.bar_chart_outlined, "Satış İstatikleri",Products()),
+                _buildListTile(
+                    Icons.pending_actions, "Satış Ekranı", getBarcodeList),
                 const Padding(
                   padding: EdgeInsets.only(left: 16),
                   child: Align(
@@ -373,14 +372,17 @@ Widget _buildListTile(IconData icon, String title, void Function() onTap) {
                     ),
                   ),
                 ),
-                
-                _buildListTile(Icons.category, "Kategoriler",getAllCategoriesList),
-                _buildListTile(Icons.people, "Kullanıcılar",getAllUsers),
-                _buildListTile(Icons.add_home_work, "Marketler",getAllMarketsList),
-                _buildListTile(Icons.shopping_basket, "Ürünler",getProductsList),
-                _buildListTile(Icons.shopping_basket, "Ürün Talepleri",getProductRequestList),
-                _buildListTile(Icons.money, "Ürün Tedarikçi Fiyatları",getProductsRetailsPrices),
-            
+                _buildListTile(Icons.people, "Kullanıcılar", getAllUsers),
+                _buildListTile(
+                    Icons.category, "Kategoriler", getAllCategoriesList),
+                _buildListTile(
+                    Icons.shopping_basket, "Ürünler", getProductsList),
+                _buildListTile(Icons.shopping_basket, "Ürün Talepleri",
+                    getProductRequestList),
+                _buildListTile(Icons.money, "Ürün Tedarikçi Fiyatları",
+                    getProductsRetailsPrices),
+                _buildListTile(
+                    Icons.add_home_work, "Marketler", getAllMarketsList),
               ],
             ),
           ],
@@ -415,10 +417,8 @@ Widget _buildListTile(IconData icon, String title, void Function() onTap) {
                 ),
                 IconButton(
                   icon: const Icon(Icons.logout_outlined),
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>  LoginPage())),
+                  onPressed: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage())),
                   color: Colors.black87,
                 )
               ],

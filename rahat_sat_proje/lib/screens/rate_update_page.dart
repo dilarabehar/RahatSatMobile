@@ -20,20 +20,26 @@ class _RateUpdateState extends State<RateUpdate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-        Card(
-          elevation: 4,
-          margin: EdgeInsets.all(8.0),
-          child:Container(
-             alignment: Alignment.center,
-            child: rateUpdatePage(context),
-            padding:const EdgeInsets.only(bottom: 10),
-          ),
+      appBar: AppBar(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Card(
+                  elevation: 4,
+                  margin: EdgeInsets.all(8.0),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: rateUpdatePage(context),
+                    padding: const EdgeInsets.only(bottom: 10),
+                  ),
+                ),
+              ]),
         ),
-      ]),
+      ),
     );
   }
 
@@ -41,14 +47,17 @@ class _RateUpdateState extends State<RateUpdate> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8, top: 10),
-              child: Text("Oran Güncelle",
-                  style:
-                      TextStyle(color: Colors.purple.shade100, fontSize: 20)),
-            )),
+        Padding(
+          padding: const EdgeInsets.only(left: 8, top: 10),
+          child: Text(
+            "Oran Güncelle",
+            style: TextStyle(
+              color: Colors.purple.shade100,
+              fontSize: 20,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
         const SizedBox(height: 15),
         Padding(
           padding: const EdgeInsets.only(right: 20, left: 20),
@@ -62,8 +71,8 @@ class _RateUpdateState extends State<RateUpdate> {
             hideSelectedFieldWhenExpanded:
                 true, //true ise seçilen özellik gizlensin
             decoration: CustomDropdownDecoration(
-                expandedFillColor: Theme.of(context).colorScheme.background,
-                closedFillColor: Theme.of(context).colorScheme.scrim),
+                expandedFillColor: Theme.of(context).colorScheme.surface,
+                closedFillColor: Theme.of(context).colorScheme.background),
             closedHeaderPadding: const EdgeInsets.all(15),
           ),
         ),
@@ -106,7 +115,7 @@ class _RateUpdateState extends State<RateUpdate> {
               labelText: "Oran (%) ",
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.horizontal(
-                    right: Radius.circular(30.0), left: Radius.circular(30.0)),
+                    right: Radius.circular(10.0), left: Radius.circular(10.0)),
               ),
             ),
           ),
@@ -127,7 +136,7 @@ class _RateUpdateState extends State<RateUpdate> {
                   onPressed: () {},
                   child: const Text("GÜNCELLE"),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 20),
                 Padding(
                   padding: const EdgeInsets.only(right: 20),
                   child: ElevatedButton(

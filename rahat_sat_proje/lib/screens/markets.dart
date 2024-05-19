@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/markets_model.dart';
+import 'package:rahat_sat_project/screens/market_create_page.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 //Markets Screen
@@ -54,64 +55,69 @@ class _MarketsViewState extends State<MarketsView> {
             child: Column(
               children: marketsList.map((markets) {
                 return Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Card(
-                      elevation: 3,
-                      margin: EdgeInsets.all(8),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(16),
-                        title: Row(
-                          children: [
-                            
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Market Ad: ${markets.name}" ?? '',
-                                    style: GoogleFonts.getFont('Lato'),
-                                  ),
-                                  Text(
-                                    "Adres: ${markets.address}" ?? '' ,
-                                    style: GoogleFonts.getFont('Lato'),
-                                  ),
-                                ],
-                              ),
+                  padding: EdgeInsets.all(3),
+                  child: Card(
+                    elevation: 3,
+                    margin: EdgeInsets.all(8),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(16),
+                      title: Row(
+                        children: [
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Market Ad: ${markets.name}" ?? '',
+                                  style: GoogleFonts.getFont('Lato'),
+                                ),
+                                Text(
+                                  "Adres: ${markets.address}" ?? '',
+                                  style: GoogleFonts.getFont('Lato'),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              onPressed: () {},
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                }).toList(),
+                  ),
+                );
+              }).toList(),
             ),
           ),
-          
         ),
-      floatingActionButton: Container(
-          child:  ElevatedButton(
-            style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),
+        floatingActionButton: Container(
+          child: ElevatedButton(
+            style: const ButtonStyle(
+              backgroundColor:
+                  MaterialStatePropertyAll(Color.fromARGB(192, 91, 67, 196)),
             ),
-            onPressed: () {},
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MarketCreatePage())),
             child: Text("Yeni Market Oluştur",
-            style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
-            ),
+                style: GoogleFonts.getFont('Lato',
+                    fontStyle: FontStyle.normal,
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                    ))),
           ),
-        ),),
+        ),
+      ),
     );
   }
 }

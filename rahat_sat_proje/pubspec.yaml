@@ -49,6 +49,8 @@ dependencies:
   animated_custom_dropdown: 3.0.0
   flutter_barcode_scanner: ^2.0.0
   barcode_scanner: ^4.2.0
+  image_picker: ^0.8.4+4
+
 
 
 
