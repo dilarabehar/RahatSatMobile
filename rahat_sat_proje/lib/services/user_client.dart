@@ -328,6 +328,50 @@ class UserClient {
     }
   }
 
+  // update staff permission
+  Future<void> updateStaffPermissions(
+      String staffId,
+      bool read_categories,
+      bool read_products,
+      bool read_staff,
+      bool write_categories,
+      bool write_products,
+      bool camera_sale,
+      bool write_staff) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.patch(
+          Uri.parse(baseUrl + "staff/permissions/$staffId"),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "read_categories": read_categories,
+            "read_products": read_products,
+            "read_staff": read_staff,
+            "write_staff": write_staff,
+            "write_categories": write_categories,
+            "write_products": write_products,
+            "camera_sale": camera_sale
+          }),
+        );
+        if (response.statusCode == 200) {
+          print("staff updated succesfully");
+        } else {
+          throw Exception(
+              "Güncelleme işlemi başarısız..:${response.statusCode}");
+        }
+      } else {
+        throw Exception("Token Alınamadı.");
+      }
+    } catch (error) {
+      print(error);
+      throw Exception("Güncelleme işlemi sırasında bir hata oluştu");
+    }
+  }
+
   Future<List<UsersModelsListing>> getAllUsers() async {
     try {
       var token = await _dataService.tryGetItem("token");
@@ -515,8 +559,72 @@ class UserClient {
     }
     return [];
   }
-}
 
+//  product listing api -> sold products
+  Future<void> updateSoldProduct(
+    String id,
+    String product_id,
+    double product_listing_stock_count,
+    double product_listing_unit_cost,
+    double product_listing_tax_rate,
+    double product_listing_profit_rate,
+  ) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.patch(
+          Uri.parse(baseUrl + "product-listings/$id"),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "product_id": product_id,
+            "product_listing_stock_count": product_listing_stock_count,
+            "product_listing_unit_cost": product_listing_unit_cost,
+            "product_listing_tax_rate": product_listing_tax_rate,
+            "product_listing_profit_rate": product_listing_profit_rate,
+          }),
+        );
+        if (response.statusCode == 200) {
+          print("Product updated successfully");
+        } else {
+          throw Exception(
+              "Güncelleme İşlemi Başarısız : ${response.statusCode}");
+        }
+      } else {
+        throw Exception("Token alınamadı.");
+      }
+    } catch (error) {
+      print(error);
+      throw Exception("Güncelleme işlemi sırasında bir hata oluştu.${error}");
+    }
+  }
+Future<void> deleteSoldProduct(String id) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        // Token başarıyla alındı, şimdi isteği gönderebiliriz
+        var response = await http.delete(
+          Uri.parse(baseUrl + "product-listings/$id"),
+          headers: {"Authorization": "Bearer $token"},
+        );
+        if (response.statusCode == 200) {
+          print("Satılan ürün başarı ile silindi");
+        } else {
+          throw Exception("Delete İşlemi Başarısız : ${response.statusCode}");
+        }
+      } else {
+        // Token alınamadı, hata durumu
+        throw Exception("Token alınamadı.");
+      }
+    } catch (error) {
+      print(error);
+      // Hata durumunda
+      throw Exception("Silme işlemi sırasında bir hata oluştu.");
+    }
+  }
+}
 
 
 
@@ -566,6 +674,3 @@ class UserClient {
 }
  
  */
-
-//Response<dynamic> ({"productListings":[{"id":"f5bd5f2a-6a0d-43f9-b4b3-765ed3ffe585","product_id":"60a88aae-3fd7-4708-b0ef-0b2df7416729","market_id":"0535a220-505c-4f0f-b250-a6cd9a48ea22","stock_count":14,"unit_cost":12.21,"tax_rate":20,"profit_rate":35,"total_price":19.78,"created_at":"2023-09-27T21:57:36.000000Z","updated_at":"2023-10-14T09:47:45.000000Z","product":{"id":"60a88aae-3fd7-4708-b0ef-0b2df7416729","category_id":"a6a65298-fe53-46bf-87fe-b58930807b60","name":"Eti Cin Portakal Jöleli Bisküvi Çoklu Paket (325 g)","barcode":"8690526063140","image":"productImages/8690526063140.jpeg","created_at":"2023-09-27T21:51:41.000000Z","updated_at":"2023-09-27T21:51:41.000000Z"}},{"id":"aba295ea-5ad5-4c70-a57a-2e9b6fa8ff36","product_id":"7812839b-d539-44d2-99c3-83a31272c782","market_id":"0535a220-505c-4f0f-b250-a6cd9a48ea22","stock_count":60,"unit_cost":12,"tax_rate":20,"profit_rate":35,"total_price":19.44,"created_at":"2023-10-14T09:08:40.000000Z","updated_at":"2023-10-14T09:47:45.000000Z","product":{"id":"7812839b-d539-44d2-99c3-83a31272c782","category_id":"1df2704c-f208-4407-a450-88ef225348ca","name":"Maltana Ananas Aromalı Alkolsüz Malt İçeceği (250 ml)","barcode":"8697520533525","image":"productImages/8697520533525.jpeg","created_at":"2023-09-27T21:51:44.000000Z","updated_at":"2023-09-27T21:51:44.000000Z"}}],"total":2,"perPage":10,"page":1})
-

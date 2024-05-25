@@ -198,10 +198,10 @@ class SoldListing {
   String? id;
   String? productId;
   String? marketId;
-  int? stockCount;
+  double? stockCount;
   double? unitCost;
-  int? taxRate;
-  int? profitRate;
+  double? taxRate;
+  double? profitRate;
   double? totalPrice;
   String? createdAt;
   String? updatedAt;

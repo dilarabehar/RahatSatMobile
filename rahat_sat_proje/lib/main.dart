@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rahat_sat_project/features/colors.dart';
 import 'package:rahat_sat_project/model/autho_response.dart';
 import 'package:rahat_sat_project/model/login_model.dart';
-import 'package:rahat_sat_project/screens/barcode.dart';
 import 'package:rahat_sat_project/screens/home_page_a.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
@@ -25,7 +24,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      home:  MyHomePage(title: "ddkfkdsflks",),
+      home: MyHomePage(
+        title: "ddkfkdsflks",
+      ),
     );
   }
 }

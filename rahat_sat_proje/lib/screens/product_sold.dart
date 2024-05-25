@@ -1,9 +1,9 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 import 'package:rahat_sat_project/screens/product_edits_page.dart';
 import 'package:rahat_sat_project/screens/rate_update_page.dart';
+import 'package:rahat_sat_project/services/user_client.dart';
 
 class ProductSoldView extends StatefulWidget {
   final List<SoldListing> inProducts;
@@ -16,6 +16,7 @@ class ProductSoldView extends StatefulWidget {
 
 class _ProductSoldViewState extends State<ProductSoldView> {
   late List<SoldListing> products;
+  late UserClient userClient = new UserClient();
   @override
   void initState() {
     super.initState();
@@ -108,26 +109,54 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ProductsEdit())),
+                                  builder: (context) =>
+                                      ProductsEdit(inSoldListing: product))),
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            AwesomeDialog(
+                          onPressed: () async {
+                            // Silme işlemini onaylamak için bir alert göster
+                            bool deleteConfirmed = await showDialog(
                               context: context,
-                              dialogType: DialogType.warning,
-                              animType: AnimType.bottomSlide,
-                              showCloseIcon: true,
-                              title: "Dikkat",
-                              desc: "Ürünü silmek istediğinizden emin misiniz?",
-                              btnCancelOnPress: () {
-                                Navigator.pop(context);
-                              },
-                              btnOkOnPress: () {},
-                              
-                              btnCancelText: "Hayır",
-                              btnOkText: "Evet",
-                            ).show();
+                              builder: (context) => AlertDialog(
+                                title: Text('Ürün Satışını Sil'),
+                                content: Text(
+                                    'Ürün satışını silmek istediğinizden emin misiniz?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(
+                                          context, false);
+                                    },
+                                    child: Text('İptal'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context,
+                                          true);
+                                    },
+                                    child: Text('Sil'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (deleteConfirmed) {
+                              try {
+                                await userClient.deleteSoldProduct(product.id!);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: const Text(
+                                          'Satılan ürün başarıyla silindi')),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          'Ürün silinirken bir hata oluştu: $e')),
+                                );
+                              }
+                            }
                           },
                         ),
                       ],
@@ -166,10 +195,12 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                   backgroundColor: MaterialStatePropertyAll(
                       Color.fromARGB(192, 91, 67, 196)),
                 ),
-                onPressed: () { Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RateUpdate()));},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RateUpdate()));
+                },
                 child: Text("Oranları Güncelle",
                     style: GoogleFonts.getFont('Lato',
                         fontStyle: FontStyle.normal,

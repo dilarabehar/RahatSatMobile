@@ -1,6 +1,4 @@
-
 class StaffPermissionsModelPermissionsUser {
-
   String? id;
   String? marketId;
   String? name;
@@ -92,7 +90,9 @@ class StaffPermissionsModelPermissions {
     cameraSale = json['camera_sale']?.toInt();
     createdAt = json['created_at']?.toString();
     updatedAt = json['updated_at']?.toString();
-    user = (json['user'] != null) ? StaffPermissionsModelPermissionsUser.fromJson(json['user']) : null;
+    user = (json['user'] != null)
+        ? StaffPermissionsModelPermissionsUser.fromJson(json['user'])
+        : null;
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -115,7 +115,6 @@ class StaffPermissionsModelPermissions {
 }
 
 class StaffPermissionsModel {
-
   List<StaffPermissionsModelPermissions>? permissions;
   int? total;
   int? perPage;
@@ -128,13 +127,13 @@ class StaffPermissionsModel {
     this.page,
   });
   StaffPermissionsModel.fromJson(Map<String, dynamic> json) {
-  if (json['permissions'] != null) {
-  final v = json['permissions'];
-  final arr0 = <StaffPermissionsModelPermissions>[];
-  v.forEach((v) {
-  arr0.add(StaffPermissionsModelPermissions.fromJson(v));
-  });
-    permissions = arr0;
+    if (json['permissions'] != null) {
+      final v = json['permissions'];
+      final arr0 = <StaffPermissionsModelPermissions>[];
+      v.forEach((v) {
+        arr0.add(StaffPermissionsModelPermissions.fromJson(v));
+      });
+      permissions = arr0;
     }
     total = json['total']?.toInt();
     perPage = json['perPage']?.toInt();
@@ -145,9 +144,9 @@ class StaffPermissionsModel {
     if (permissions != null) {
       final v = permissions;
       final arr0 = [];
-  v?.forEach((v) {
-  arr0.add(v.toJson());
-  });
+      v?.forEach((v) {
+        arr0.add(v.toJson());
+      });
       data['permissions'] = arr0;
     }
     data['total'] = total;
@@ -156,9 +155,10 @@ class StaffPermissionsModel {
     return data;
   }
 }
+
 class StaffPermissionsListing {
-  final String id;
-  final String userId;
+  final String? id;
+  final String? userId;
   final int? readCategories;
   final int? writeCategories;
   final int? readProducts;
@@ -166,13 +166,13 @@ class StaffPermissionsListing {
   final int? readStaff;
   final int? writeStaff;
   final int? cameraSale;
-  final String createdAt;
-  final String updatedAt;
+  final String? createdAt;
+  final String? updatedAt;
   final StaffPermissionsModelPermissionsUser? user;
 
   StaffPermissionsListing({
-    required this.id,
-    required this.userId,
+    this.id,
+    this.userId,
     this.readCategories,
     this.writeCategories,
     this.readProducts,
@@ -180,8 +180,8 @@ class StaffPermissionsListing {
     this.readStaff,
     this.writeStaff,
     this.cameraSale,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
     this.user,
   });
 
@@ -198,7 +198,9 @@ class StaffPermissionsListing {
       cameraSale: json['camera_sale'] ?? null,
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      user: (json['user'] != null) ? StaffPermissionsModelPermissionsUser.fromJson(json['user']) : null,
+      user: (json['user'] != null)
+          ? StaffPermissionsModelPermissionsUser.fromJson(json['user'])
+          : null,
     );
   }
 }
