@@ -78,7 +78,7 @@ class UserClient {
     }
   }
 
-// bunu yeni ekledim page olmadan almak için
+// bunu yeni ekledim page olmadan almak için gerekli mi tartisilir ?:( ?
 Future<List<ProductListing>?> getAllProduct() async {
     try {
       var token = await _dataService.tryGetItem("token");
