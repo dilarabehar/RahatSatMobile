@@ -78,6 +78,35 @@ class UserClient {
     }
   }
 
+// bunu yeni ekledim page olmadan almak için
+Future<List<ProductListing>?> getAllProduct() async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.get(
+          Uri.parse(baseUrl + "products"),
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token"
+          },
+        );
+        if (response.statusCode == 200) {
+          List<ProductListing> productListingList = [];
+
+          for (var productListing
+              in jsonDecode(response.body)["products"]) {
+            productListingList.add(ProductListing.fromJson(productListing));
+          }
+          return productListingList;
+        }
+      }
+      return null;
+    } catch (error) {
+      print(error);
+      return null;
+    }
+  }
   Future<List<SoldListing>?> getSalesProduct() async {
     try {
       var token = await _dataService.tryGetItem("token");

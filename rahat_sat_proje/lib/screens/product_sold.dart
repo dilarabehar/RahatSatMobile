@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
 import 'package:rahat_sat_project/screens/product_edits_page.dart';
+import 'package:rahat_sat_project/screens/product_listings_create.dart';
 import 'package:rahat_sat_project/screens/rate_update_page.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
@@ -125,15 +126,13 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.pop(
-                                          context, false);
+                                      Navigator.pop(context, false);
                                     },
                                     child: Text('İptal'),
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.pop(context,
-                                          true);
+                                      Navigator.pop(context, true);
                                     },
                                     child: Text('Sil'),
                                   ),
@@ -176,7 +175,10 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                   backgroundColor: MaterialStatePropertyAll(
                       Color.fromARGB(192, 91, 67, 196)),
                 ),
-                onPressed: () {},
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductListingCreate())),
                 child: Text("Yeni Ürün Sat",
                     style: GoogleFonts.getFont('Lato',
                         fontStyle: FontStyle.normal,

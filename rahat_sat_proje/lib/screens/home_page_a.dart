@@ -396,7 +396,7 @@ class _HomePage extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: const Color.fromARGB(192, 91, 67, 196),
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
