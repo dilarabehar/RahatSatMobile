@@ -4,8 +4,6 @@ import 'package:rahat_sat_project/model/markets_model.dart';
 import 'package:rahat_sat_project/screens/market_create_page.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
-//Markets Screen
-
 class MarketsView extends StatefulWidget {
   final List<MarketsModelsListing> inMarketList;
 
@@ -18,7 +16,7 @@ class MarketsView extends StatefulWidget {
 class _MarketsViewState extends State<MarketsView> {
   late List<MarketsModelsListing> marketsList;
   int currentPage = 1; // Initial page
-  UserClient userClient = new UserClient();
+  UserClient userClient = UserClient();
 
   @override
   void initState() {
@@ -46,7 +44,6 @@ class _MarketsViewState extends State<MarketsView> {
             if (scrollInfo.metrics.pixels ==
                 scrollInfo.metrics.maxScrollExtent) {
               // Reached the bottom of the list, load more data
-              //deneme yorum
               loadMoreData();
             }
             return false;
@@ -90,7 +87,21 @@ class _MarketsViewState extends State<MarketsView> {
                           ),
                           IconButton(
                             icon: Icon(Icons.delete),
-                            onPressed: () {},
+                            onPressed: () async {
+                              try {
+                                await userClient.deleteMarket(markets.id!);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Market başarıyla silindi.')),
+                                );
+                                setState(() {
+                                  marketsList.remove(markets); // Listeden silinen marketi kaldır
+                                });
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Market silinirken hata oluştu.')),
+                                );
+                              }
+                            },
                           ),
                         ],
                       ),

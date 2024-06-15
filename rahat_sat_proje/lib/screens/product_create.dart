@@ -2,30 +2,33 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rahat_sat_project/services/user_client.dart';
 
-class MarketCreatePage extends StatefulWidget {
-  const MarketCreatePage({Key? key}) : super(key: key);
+class ProductCreatePage extends StatefulWidget {
+  const ProductCreatePage({Key? key}) : super(key: key);
 
   @override
-  State<MarketCreatePage> createState() => _MarketCreatePageState();
+  _ProductCreatePageState createState() => _ProductCreatePageState();
 }
 
-class _MarketCreatePageState extends State<MarketCreatePage> {
-  late TextEditingController marketNameController;
-  late TextEditingController marketAddressController;
+class _ProductCreatePageState extends State<ProductCreatePage> {
+  late TextEditingController productNameController;
+  late TextEditingController productBarcodeController;
   File? _image;
+  UserClient product = UserClient();
+
 
   @override
   void initState() {
     super.initState();
-    marketNameController = TextEditingController();
-    marketAddressController = TextEditingController();
+    productNameController = TextEditingController();
+    productBarcodeController = TextEditingController();
   }
 
   @override
   void dispose() {
-    marketNameController.dispose();
-    marketAddressController.dispose();
+    productNameController.dispose();
+    productBarcodeController.dispose();
     super.dispose();
   }
 
@@ -34,7 +37,7 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Card(
           elevation: 4,
           child: Padding(
@@ -42,20 +45,20 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  "Yeni Market Oluştur",
+                const Text(
+                  "Yeni Ürün Oluştur",
                   style: TextStyle(
-                    color: Colors.purple.shade100,
+                    color: Color.fromARGB(255, 134, 44, 150),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextField(
-                  controller: marketNameController,
+                  controller: productNameController,
                   decoration: const InputDecoration(
-                    labelText: "Market Adı",
+                    labelText: "Ürün Adı",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.horizontal(
                           right: Radius.circular(10.0),
@@ -63,11 +66,11 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
-                  controller: marketAddressController,
+                  controller: productBarcodeController,
                   decoration: const InputDecoration(
-                    labelText: "Market Adresi",
+                    labelText: "Ürün Barkodu",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.horizontal(
                           right: Radius.circular(10.0),
@@ -75,11 +78,11 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 GestureDetector(
                   onTap: _getImage,
                   child: Container(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: const BorderRadius.horizontal(
@@ -89,11 +92,11 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.file_upload, size: 18),
-                        SizedBox(width: 5),
+                        const Icon(Icons.file_upload, size: 18),
+                        const SizedBox(width: 5),
                         Text(
                           _image == null
-                              ? "Dosya Seç"
+                              ? "Resim Seç"
                               : _image!.path.split('/').last,
                           style: const TextStyle(fontSize: 12),
                         ),
@@ -101,22 +104,42 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                         Color.fromARGB(209, 162, 95, 189)),
                   ),
-                  onPressed: () {
-                    createMarketRequest();
-                    Navigator.pop(context);
-                  },
-                  child: Text("OLUŞTUR"),
+                  onPressed: () async {
+    try {
+      await product.createProduct(
+        productCategoryId: null, // Buraya kategori ID'si ekleyebilirsiniz
+        productName: productNameController.text,
+        productBarcode: productBarcodeController.text.isEmpty
+            ? null
+            : productBarcodeController.text,
+        productImage: _image,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Ürün başarıyla oluşturuldu"),
+        ),
+      );
+      // Ürün başarıyla oluşturulduktan sonra navigasyon işlemleri yapılabilir
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Ürün oluşturulurken bir hata oluştu: $error"),
+        ),
+      );
+    }
+  },
+                  child: const Text("OLUŞTUR"),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("KAPAT"),
+                  child: const Text("KAPAT"),
                 ),
               ],
             ),
@@ -127,28 +150,13 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
   }
 
   Future<void> _getImage() async {
-    // Resim seçme işlevselliği
-    // Kullanıcı galeriden resim seçiyor
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    // Kullanıcı resim seçtiyse ve dosya null değilse
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path); // Seçilen resmi _image değişkenine ata
+        _image = File(pickedFile.path);
       });
     }
-  }
-
-  void createMarketRequest() {
-    // Burada MarketService sınıfını kullanarak bir POST isteği gönderebilirsiniz
-    String marketName = marketNameController.text;
-    String marketAddress = marketAddressController.text;
-    String? marketImage = _image?.path; // Market resmini al
-
-    // Örnek olarak konsola yazdırabiliriz
-    print("Market Adı: $marketName");
-    print("Market Adresi: $marketAddress");
-    print("Market Resmi: $marketImage");
   }
 }

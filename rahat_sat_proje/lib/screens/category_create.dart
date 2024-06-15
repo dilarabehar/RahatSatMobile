@@ -1,31 +1,35 @@
-import 'dart:io';
-
+import 'dart:convert';
+import 'dart:io'; 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:dio/dio.dart';
+import 'package:rahat_sat_project/services/data_service.dart';
+import 'package:rahat_sat_project/services/user_client.dart';
 
-class MarketCreatePage extends StatefulWidget {
-  const MarketCreatePage({Key? key}) : super(key: key);
+
+//PLATFORM ANDROıD OLMASI GEREK
+
+class CategoryCreatePage extends StatefulWidget {
+  const CategoryCreatePage({Key? key}) : super(key: key);
 
   @override
-  State<MarketCreatePage> createState() => _MarketCreatePageState();
+  State<CategoryCreatePage> createState() => _CategoryCreatePageState();
 }
 
-class _MarketCreatePageState extends State<MarketCreatePage> {
-  late TextEditingController marketNameController;
-  late TextEditingController marketAddressController;
+class _CategoryCreatePageState extends State<CategoryCreatePage> {
+  late TextEditingController categoryNameController;
   File? _image;
+  final DataService _dataService = DataService();
 
   @override
   void initState() {
     super.initState();
-    marketNameController = TextEditingController();
-    marketAddressController = TextEditingController();
+    categoryNameController = TextEditingController();
   }
 
   @override
   void dispose() {
-    marketNameController.dispose();
-    marketAddressController.dispose();
+    categoryNameController.dispose();
     super.dispose();
   }
 
@@ -43,7 +47,7 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  "Yeni Market Oluştur",
+                  "Yeni Kategori Oluştur",
                   style: TextStyle(
                     color: Colors.purple.shade100,
                     fontSize: 20,
@@ -53,21 +57,9 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
                 ),
                 SizedBox(height: 20),
                 TextField(
-                  controller: marketNameController,
+                  controller: categoryNameController,
                   decoration: const InputDecoration(
-                    labelText: "Market Adı",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.horizontal(
-                          right: Radius.circular(10.0),
-                          left: Radius.circular(10.0)),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: marketAddressController,
-                  decoration: const InputDecoration(
-                    labelText: "Market Adresi",
+                    labelText: "Kategori Adı",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.horizontal(
                           right: Radius.circular(10.0),
@@ -108,8 +100,7 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
                         Color.fromARGB(209, 162, 95, 189)),
                   ),
                   onPressed: () {
-                    createMarketRequest();
-                    Navigator.pop(context);
+                    createCategoryRequest();
                   },
                   child: Text("OLUŞTUR"),
                 ),
@@ -127,28 +118,61 @@ class _MarketCreatePageState extends State<MarketCreatePage> {
   }
 
   Future<void> _getImage() async {
-    // Resim seçme işlevselliği
-    // Kullanıcı galeriden resim seçiyor
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    // Kullanıcı resim seçtiyse ve dosya null değilse
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path); // Seçilen resmi _image değişkenine ata
+        _image = File(pickedFile.path);
       });
     }
   }
 
-  void createMarketRequest() {
-    // Burada MarketService sınıfını kullanarak bir POST isteği gönderebilirsiniz
-    String marketName = marketNameController.text;
-    String marketAddress = marketAddressController.text;
-    String? marketImage = _image?.path; // Market resmini al
+  Future<void> createCategoryRequest() async {
+    String categoryName = categoryNameController.text;
+    File? categoryImage = _image;
 
-    // Örnek olarak konsola yazdırabiliriz
-    print("Market Adı: $marketName");
-    print("Market Adresi: $marketAddress");
-    print("Market Resmi: $marketImage");
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token == null) {
+        throw Exception("Kullanıcı oturum açmamış.");
+      }
+
+      FormData formData = FormData.fromMap({
+        'category_name': categoryName,
+        if (categoryImage != null) 
+          'category_image': await MultipartFile.fromFile(categoryImage.path),
+      });
+
+      var dio = Dio();
+      var response = await dio.post(
+        baseUrl + "categories/",
+        data: formData,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+          },
+        ),
+      );
+
+      if (response.statusCode == 201) {
+        print("Kategori başarıyla oluşturuldu: ${response.data}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Kategori başarıyla oluşturuldu")),
+        );
+      } else if (response.statusCode == 422) {
+        final jsonResponse = jsonDecode(response.data);
+        final message = jsonResponse['message'];
+        print("Hata: $message");
+        throw Exception("Kategori oluşturulurken bir hata oluştu: $message");
+      } else {
+        throw Exception("Kategori oluşturulurken bir hata oluştu: ${response.statusCode}");
+      }
+    } catch (error) {
+      print("Hata: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Kategori oluşturulurken bir hata oluştu: $error")),
+      );
+    }
   }
 }

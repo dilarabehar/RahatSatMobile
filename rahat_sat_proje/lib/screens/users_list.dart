@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/users_model.dart';
+import 'package:rahat_sat_project/screens/users_list_create.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 // ALL USERS
@@ -16,7 +17,7 @@ class UsersListView extends StatefulWidget {
 class _UsersListViewState extends State<UsersListView> {
   late List<UsersModelsListing> userModels;
   int currentPage = 1;
-  UserClient user = new UserClient();
+  UserClient user = UserClient();
 
   @override
   void initState() {
@@ -30,7 +31,8 @@ class _UsersListViewState extends State<UsersListView> {
       userModels.addAll(allUsersData);
     });
   }
-Widget getRoleIcon(int? role) {
+
+  Widget getRoleIcon(int? role) {
     switch (role) {
       case 0:
         return Text("Admin");
@@ -42,6 +44,7 @@ Widget getRoleIcon(int? role) {
         return Text("Bilinmeyen");
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,8 +55,7 @@ Widget getRoleIcon(int? role) {
         ),
         body: NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification scrollInfo) {
-            if (scrollInfo.metrics.pixels ==
-                scrollInfo.metrics.maxScrollExtent) {
+            if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
               loadMoreData();
             }
             return false;
@@ -62,66 +64,77 @@ Widget getRoleIcon(int? role) {
             child: Column(
               children: userModels.map((user) {
                 return Padding(
-                padding: EdgeInsets.all(3),
-                child: Card(
-                  elevation: 3,
-                  margin: EdgeInsets.all(8),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    title: Row(
-                      children: [
-                  
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.name ?? '',
-                                style: GoogleFonts.getFont('Lato'),
-                              ),
-                              Text(
-                                  user.market!.name ?? '',
-                                  style: GoogleFonts.getFont('Lato',
-                                      fontStyle: FontStyle.normal,
-                                      textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w400)),
+                  padding: const EdgeInsets.all(3),
+                  child: Card(
+                    elevation: 3,
+                    margin: const EdgeInsets.all(8),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16),
+                      title: Row(
+                        children: [
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user.name ?? '',
+                                  style: GoogleFonts.getFont('Lato'),
                                 ),
-                                  getRoleIcon(user.isMarketStaff),
+                                Text(
+                                  user.market!.name ?? '',
+                                  style: GoogleFonts.getFont(
+                                    'Lato',
+                                    fontStyle: FontStyle.normal,
+                                    textStyle: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                getRoleIcon(user.isMarketStaff),
                               ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {},
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {},
-                        ),
-                      ],
+                        ],
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {},
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-              
+                );
               }).toList(),
             ),
           ),
-
         ),
         floatingActionButton: Container(
-          child:  ElevatedButton(
-            style:  const ButtonStyle(backgroundColor:MaterialStatePropertyAll( Color.fromARGB(192, 91, 67, 196)),
+          child: ElevatedButton(
+            style: const ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(Color.fromARGB(192, 91, 67, 196)),
             ),
-            onPressed: () {},
-            child: Text("Yeni Kullanıcı Oluştur",
-            style: GoogleFonts.getFont('Lato',fontStyle: FontStyle.normal,textStyle: const TextStyle(color: Colors.white,))
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UserCreatePage()),
+              );
+            },
+            child: Text(
+              "Yeni Kullanıcı Oluştur",
+              style: GoogleFonts.getFont(
+                'Lato',
+                fontStyle: FontStyle.normal,
+                textStyle: const TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ),

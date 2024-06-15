@@ -145,6 +145,9 @@ class _StaffCreatePageState extends State<StaffCreatePage> {
     print("Personel Adı: $staffName");
     print("E-posta Adresi: $staffMail");
     print("Şifre: $staffPassword");
+
+    Navigator.pop(context);
+
     /*  Future.delayed(const Duration(seconds: 1));
     staffPostService.createStaff(name, email, password).then((response) {
       showDialog(

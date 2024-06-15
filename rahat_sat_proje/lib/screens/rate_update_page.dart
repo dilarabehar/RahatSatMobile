@@ -1,6 +1,7 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rahat_sat_project/services/user_client.dart';
 
 class RateUpdate extends StatefulWidget {
   const RateUpdate({super.key});
@@ -16,6 +17,67 @@ const List<String> _list = <String>['One', 'Two', 'Three', 'Four'];
 class _RateUpdateState extends State<RateUpdate> {
   RadioButtonOptions? _character = RadioButtonOptions.KDV;
   TextEditingController selectedValue = TextEditingController();
+  String? selectedCategory; // Yeni eklenen değişken
+
+  final UserClient rateUpdate = UserClient();
+
+  Future<void> _submitRequest() async {
+  // Kategori seçimi kontrolü
+  if (selectedCategory == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Lütfen bir kategori seçiniz.'),
+      ),
+    );
+    return;
+  }
+
+  // Oran türü seçimi kontrolü
+  if (_character == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Lütfen bir oran türü seçiniz.'),
+      ),
+    );
+    return;
+  }
+
+  // Oran değeri kontrolü
+  if (selectedValue.text.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Lütfen bir oran değeri giriniz.'),
+      ),
+    );
+    return;
+  }
+
+  try {
+    // Oranı güncelle
+    await rateUpdate.updateProductListingRates(
+      selectedCategory!, // Seçilen kategori ID'si
+      _character == RadioButtonOptions.KDV ? 'tax' : 'profit', // Oran türü (KDV veya Kar)
+      double.parse(selectedValue.text), // Oran değeri
+    );
+
+    // Başarılı bir şekilde güncellendiğine dair geri bildirim göster
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Ürün oranları başarıyla güncellendi.'),
+      ),
+    );
+
+    // Sayfayı kapat
+    Navigator.pop(context);
+  } catch (e) {
+    // Hata durumunda bir hata mesajı göster
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Ürün oranları güncellenirken bir hata oluştu: $e'),
+      ),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -59,17 +121,19 @@ class _RateUpdateState extends State<RateUpdate> {
           ),
         ),
         const SizedBox(height: 15),
-        Padding(
+       Padding(
           padding: const EdgeInsets.only(right: 20, left: 20),
           child: CustomDropdown<String>.search(
             items: _list,
             onChanged: (value) {
+              setState(() {
+                selectedCategory = value; // Kategori seçildiğinde güncelle
+              });
               print('changing value to: $value');
             },
             hintText: 'Kategori Seçiniz',
-            excludeSelected: false, // seçilen öğe tekrar görüntülenmesin mi??
-            hideSelectedFieldWhenExpanded:
-                true, //true ise seçilen özellik gizlensin
+            excludeSelected: false,
+            hideSelectedFieldWhenExpanded: true,
             decoration: CustomDropdownDecoration(
                 expandedFillColor: Theme.of(context).colorScheme.surface,
                 closedFillColor: Theme.of(context).colorScheme.background),
@@ -133,7 +197,7 @@ class _RateUpdateState extends State<RateUpdate> {
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color.fromARGB(209, 168, 42, 218)),
                   ),
-                  onPressed: () {},
+                  onPressed: _submitRequest,
                   child: const Text("GÜNCELLE"),
                 ),
                 const SizedBox(width: 20),

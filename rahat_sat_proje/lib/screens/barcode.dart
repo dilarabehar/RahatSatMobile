@@ -14,6 +14,11 @@ class _ProductScreenState extends State<ProductScreen> {
   UserClient userClient = UserClient();
 
   Future<void> fetchDataForBarcode(String barcode) async {
+     if (barcode == null) {
+    print("Barcode is null.");
+    print(barcode);
+    return;
+  }
     try {
       int page = 1; // Start from the first page
 
@@ -94,19 +99,38 @@ class _ProductScreenState extends State<ProductScreen> {
     }
   }
 
-  Future<void> scanBarcode() async {
-    var config = BarcodeScannerConfiguration(
+Future<void> scanBarcode() async {
+  var config = BarcodeScannerConfiguration(
     barcodeFormats: [BarcodeFormat.CODE_128, BarcodeFormat.DATA_MATRIX],
     topBarBackgroundColor: Colors.blueAccent,
     finderTextHint: "Please align a barcode in the frame to scan it.",
     cancelButtonTitle: "Cancel",
     flashEnabled: true,
   );
-  var result = await ScanbotBarcodeSdk.startBarcodeScanner(config);
-  // result.barcodeItems[n].barcodeFormat
-  // result.barcodeItems[n].text
-  // result.barcodeItems[n].formattedResult
+  
+  try {
+    var result = await ScanbotBarcodeSdk.startBarcodeScanner(config);
+    if (result != null && result.barcodeItems.isNotEmpty) {
+      // Barkod tarayıcısından dönen sonuçları işleyin
+      for (var barcode in result.barcodeItems) {
+        // Her bir barkod için gerekli işlemleri yapın
+        String? barcodeText = barcode.text;
+        if (barcodeText != null) {
+          await fetchDataForBarcode(barcodeText); // Geçici olarak bu şekilde kontrol edilebilir.
+        } else {
+          print("Received null barcode text.");
+        }
+      }
+    } else {
+      // Kullanıcı hiçbir barkod tarayıcı sonucu almadıysa veya iptal ettiyse
+      print("Barcode scanning cancelled or no result found.");
+    }
+  } catch (error) {
+    // Barkod tarayıcısı başlatılırken bir hata oluşursa
+    print("Error scanning barcode: $error");
   }
+}
+
 
   @override
   void initState(){
