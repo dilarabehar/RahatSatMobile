@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
+import 'package:rahat_sat_project/screens/product_create.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 //productlar
@@ -128,7 +129,14 @@ class _ProductListViewState extends State<ProductListView> {
                   backgroundColor: MaterialStatePropertyAll(
                       Color.fromARGB(192, 91, 67, 196)),
                 ),
-                onPressed: () {},
+                                onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductCreatePage(),
+      ),
+    );
+  },
                 child: Text("Yeni Ürün Oluştur",
                     style: GoogleFonts.getFont('Lato',
                         fontStyle: FontStyle.normal,

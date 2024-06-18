@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rahat_sat_project/model/autho_response.dart';
 import 'package:rahat_sat_project/model/categories_model.dart';
@@ -653,7 +656,378 @@ Future<void> deleteSoldProduct(String id) async {
       throw Exception("Silme işlemi sırasında bir hata oluştu.");
     }
   }
+
+
+  Future<void> newProductRequest(String productName, String productBarcode, String message,) async {
+    try {
+      var token = await _dataService.tryGetItem("token"); // Token'ı al
+      if (token != null) {
+        var response = await http.post(
+          Uri.parse(baseUrl + "product-listings/product-request"),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "product_name": productName,
+            "product_barcode": productBarcode,
+            "message": message,
+          }),
+        );
+        if (response.statusCode == 200) {
+          print("Product request created successfully");
+        } else {
+          throw Exception(
+              "Ürün talebi oluşturulamadı: ${response.statusCode}");
+        }
+      } else {
+        throw Exception("Token alınamadı.");
+      }
+    } catch (error) {
+      print(error);
+      throw Exception("Ürün talebi oluşturulurken bir hata oluştu: $error");
+    }
+  }
+
+Future<void> updateProductListingRates(
+    String categoryId, String rateType, double rate) async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token != null) {
+      var response = await http.patch(
+        Uri.parse(baseUrl + "product-listings/rates"),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "category_id": categoryId,
+          "rate_type": rateType,
+          "rate": rate,
+        }),
+      );
+      if (response.statusCode == 200) {
+        print("Ürün oranları başarıyla güncellendi");
+      } else {
+        throw Exception(
+            "Ürün oranları güncellenirken bir hata oluştu: ${response.statusCode}");
+      }
+    } else {
+      throw Exception("Token alınamadı.");
+    }
+  } catch (error) {
+    print(error);
+    throw Exception("Ürün oranları güncellenirken bir hata oluştu: $error");
+  }
 }
+
+
+Future<void> userCreate({
+    required String name,
+    required String email,
+    required String marketId,
+    required bool isAdmin,
+    required bool isMarketOwner,
+    required bool isMarketStaff,
+    required String password,
+  }) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.post(
+          Uri.parse("http://127.0.0.1:8000/api/users"), // Yerel IP adresini kullanın
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "name": name,
+            "email": email,
+            "market_id": marketId,
+            "is_admin": isAdmin,
+            "is_market_owner": isMarketOwner,
+            "is_market_staff": isMarketStaff,
+            "password": password,
+          }),
+        );
+
+        if (response.statusCode == 201) {
+          print("Kullanıcı başarıyla oluşturuldu");
+        } else if (response.statusCode == 422) {
+          final jsonResponse = jsonDecode(response.body);
+          final message = jsonResponse['message'];
+          print("Hata: $message");
+          throw Exception("Kullanıcı oluşturulurken bir hata oluştu: $message");
+        } else {
+          throw Exception("Kullanıcı oluşturulurken bir hata oluştu: ${response.statusCode}");
+        }
+      } else {
+        throw Exception("Token alınamadı.");
+      }
+    } catch (error) {
+      print("Hata: $error");
+      throw Exception("Kullanıcı oluşturulurken bir hata oluştu: $error");
+    }
+  }
+
+
+
+
+
+Future<void> productListingCreate({
+  required String productId,
+  required int stockCount,
+  required double unitCost,
+  required double taxRate,
+  required double profitRate,
+}) async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token != null) {
+      var response = await http.post(
+        Uri.parse(baseUrl + "product-listings/new"),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "product_id": productId,
+          "product_listing_stock_count": stockCount,
+          "product_listing_unit_cost": unitCost,
+          "product_listing_tax_rate": taxRate,
+          "product_listing_profit_rate": profitRate,
+        }),
+      );
+      if (response.statusCode == 200) {
+        print("Ürün listelemesi başarıyla oluşturuldu");
+      } else if (response.statusCode == 422) {
+        final jsonResponse = jsonDecode(response.body);
+        final message = jsonResponse['message'];
+        print("Hata: $message");
+        throw Exception("Ürün listelemesi oluşturulurken bir hata oluştu: $message");
+      } else {
+        throw Exception("Ürün listelemesi oluşturulurken bir hata oluştu: ${response.statusCode}");
+      }
+    } else {
+      throw Exception("Token alınamadı.");
+    }
+  } catch (error) {
+    print(error);
+    throw Exception("Ürün listelemesi oluşturulurken bir hata oluştu: $error");
+  }
+}
+
+
+Future<void> createCategory({
+  required String categoryName,
+  File? categoryImage,
+}) async {
+  try {
+    var token = await _dataService.tryGetItem("token");
+    if (token == null) {
+      throw Exception("Kullanıcı oturum açmamış.");
+    }
+
+    FormData formData = FormData.fromMap({
+      'category_name': categoryName,
+      if (categoryImage != null) 
+        'category_image': await MultipartFile.fromFile(categoryImage.path),
+    });
+
+    var dio = Dio();
+    var response = await dio.post(
+      baseUrl + "category/",
+      data: formData,
+      options: Options(
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      ),
+    );
+
+    if (response.statusCode == 201) {
+      print("Kategori başarıyla oluşturuldu: ${response.data}");
+    } else if (response.statusCode == 422) {
+      final jsonResponse = jsonDecode(response.data);
+      final message = jsonResponse['message'];
+      print("Hata: $message");
+      throw Exception("Kategori oluşturulurken bir hata oluştu: $message");
+    } else {
+      throw Exception("Kategori oluşturulurken bir hata oluştu: ${response.statusCode}");
+    }
+  } catch (error) {
+    print("Hata: $error");
+    throw Exception("Kategori oluşturulurken bir hata oluştu: $error");
+  }
+}
+
+Future<void> createProduct({
+  String? productCategoryId,
+  required String productName,
+  String? productBarcode,
+  File? productImage,
+}) async {
+  try {
+    var token = await _dataService.tryGetItem("token"); // Token'ı al
+    if (token != null) {
+      var request = http.MultipartRequest(
+        "POST",
+        Uri.parse(baseUrl + "products/"),
+      );
+      request.headers.addAll({
+        "Authorization": "Bearer $token",
+      });
+
+      request.fields['product_name'] = productName;
+      if (productCategoryId != null) {
+        request.fields['product_category_id'] = productCategoryId;
+      }
+      if (productBarcode != null) {
+        request.fields['product_barcode'] = productBarcode;
+      }
+      if (productImage != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'product_image',
+            productImage.path,
+          ),
+        );
+      }
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        print("Ürün başarıyla oluşturuldu");
+      } else {
+        throw Exception("Ürün oluşturulamadı: ${response.statusCode}");
+      }
+    } else {
+      throw Exception("Token alınamadı.");
+    }
+  } catch (error) {
+    print(error);
+    throw Exception("Ürün oluşturulurken bir hata oluştu: $error");
+  }
+}
+
+Future<void> createProductRetailPrice({
+    required String productId,
+    required String retailerName,
+    required double price,
+    required DateTime dataDate,
+  }) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        var response = await http.post(
+          Uri.parse(baseUrl + "product-retailer-prices"),
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "product_id": productId,
+            "retailer_name": retailerName,
+            "price": price,
+            "data_date": dataDate.toIso8601String(),
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          print("Ürün perakende fiyatı başarıyla oluşturuldu.");
+        } else {
+          throw Exception(
+              "Ürün perakende fiyatı oluşturulamadı: ${response.statusCode}");
+        }
+      } else {
+        throw Exception("Token alınamadı.");
+      }
+    } catch (error) {
+      print(error);
+      throw Exception(
+          "Ürün perakende fiyatı oluşturulurken bir hata oluştu: $error");
+    }
+  }
+
+
+    Future<void> deleteProductRetailPrice(String id) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        // Token başarıyla alındı, şimdi isteği gönderebiliriz
+        var response = await http.delete(
+          Uri.parse(baseUrl + "product-retailer-prices/$id"),
+          headers: {"Authorization": "Bearer $token"},
+        );
+        if (response.statusCode == 200) {
+          print("Price deleted successfully");
+        } else {
+          throw Exception("Delete İşlemi Başarısız : ${response.statusCode}");
+        }
+      } else {
+        // Token alınamadı, hata durumu
+        throw Exception("Token alınamadı.");
+      }
+    } catch (error) {
+      print(error);
+      // Hata durumunda
+      throw Exception("Delete işlemi sırasında bir hata oluştu.");
+    }
+  }
+
+
+     Future<void> deleteMarket(String id) async {
+    try {
+      var token = await _dataService.tryGetItem("token");
+      if (token != null) {
+        // Token başarıyla alındı, şimdi isteği gönderebiliriz
+        var response = await http.delete(
+          Uri.parse(baseUrl + "markets/$id"),
+          headers: {"Authorization": "Bearer $token"},
+        );
+        if (response.statusCode == 200) {
+          print("Market deleted successfully");
+        } else {
+          throw Exception("Delete İşlemi Başarısız : ${response.statusCode}");
+        }
+      } else {
+        // Token alınamadı, hata durumu
+        throw Exception("Token alınamadı.");
+      }
+    } catch (error) {
+      print(error);
+      // Hata durumunda
+      throw Exception("Delete işlemi sırasında bir hata oluştu.");
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -117,11 +117,13 @@ class _StaffUpdatePageState extends State<StaffUpdatePage> {
                             content: Text('Personel başarıyla güncellendi'),
                           ),
                         );
+                        Navigator.pop(context);
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
                                 'Personel güncellenirken bir hata oluştu: $e'),
+                                
                           ),
                         );
                       }

@@ -3,7 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 class SellNewProduct extends StatefulWidget {
-  const SellNewProduct({super.key});
+  final String productId;
+
+  const SellNewProduct({
+    Key? key,
+    required this.productId,
+  }) : super(key: key);
 
   @override
   State<SellNewProduct> createState() => _SellNewProductState();
@@ -36,6 +41,16 @@ class _SellNewProductState extends State<SellNewProduct> {
     kdvOrani = TextEditingController();
     karOraniController = TextEditingController();
     urunToplamFiyatController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    urunStokMiktariController.dispose();
+    urunBirimMaliyetController.dispose();
+    kdvOrani.dispose();
+    karOraniController.dispose();
+    urunToplamFiyatController.dispose();
+    super.dispose();
   }
 
   @override
@@ -88,7 +103,7 @@ class _SellNewProductState extends State<SellNewProduct> {
               }),
         ),
         ListTile(
-          title: Text("Toplam Fiyattan Hesapla"),
+          title: const Text("Toplam Fiyattan Hesapla"),
           leading: Radio<RadioButtonOptions>(
               value: RadioButtonOptions.toplamFiyat,
               groupValue: _character,
@@ -104,7 +119,7 @@ class _SellNewProductState extends State<SellNewProduct> {
               }),
         ),
         ListTile(
-          title: Text("Kar Oranı Hesapla (%)"),
+          title: const Text("Kar Oranı Hesapla (%)"),
           leading: Radio<RadioButtonOptions>(
               value: RadioButtonOptions.karOrani,
               groupValue: _character,
@@ -226,7 +241,7 @@ class _SellNewProductState extends State<SellNewProduct> {
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color.fromARGB(209, 168, 42, 218)),
                   ),
-                  onPressed: () {},
+                  onPressed: _handleDuzelButtonPressed,
                   child: const Text("DÜZENLE"),
                 ),
                 const SizedBox(width: 8),
@@ -259,4 +274,39 @@ class _SellNewProductState extends State<SellNewProduct> {
       ],
     );
   }
+
+void _handleDuzelButtonPressed() async {
+  final productId = widget.productId; // This should be retrieved from somewhere
+  final stockCount = int.tryParse(urunStokMiktariController.text) ?? 0;
+  final unitCost = double.tryParse(urunBirimMaliyetController.text) ?? 0.0;
+  final taxRate = double.tryParse(kdvOrani.text) ?? 0.0;
+  final profitRate = double.tryParse(karOraniController.text) ?? 0.0;
+
+  if (stockCount > 0 && unitCost > 0 && taxRate >= 0 && profitRate >= 0) {
+    try {
+      await userClient.productListingCreate(
+        productId: productId,
+        stockCount: stockCount,
+        unitCost: unitCost,
+        taxRate: taxRate,
+        profitRate: profitRate,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ürün başarıyla düzenlendi.')),
+      );
+      
+      // Ana sayfaya yönlendirme işlemi
+      Navigator.pop(context); // Önceki sayfaya geri dön
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Bir hata oluştu: $e')),
+      );
+    }
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Lütfen tüm alanları doğru doldurduğunuzdan emin olun.')),
+    );
+  }
+}
+
 }

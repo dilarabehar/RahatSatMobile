@@ -4,9 +4,7 @@ import 'package:rahat_sat_project/screens/sell_new_product_page.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 class ProductListingCreate extends StatefulWidget {
-  const ProductListingCreate({
-    super.key,
-  });
+  const ProductListingCreate({super.key});
 
   @override
   State<ProductListingCreate> createState() => _ProductListingCreateState();
@@ -17,13 +15,14 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
   TextEditingController nameController = TextEditingController();
 
   UserClient userClient = UserClient();
-  late List<ProductListing> productListing;
+  late List<ProductListing> productListing = [];
   List<ProductListing> filteredProductListing = [];
 
   String? barcodeValue;
   int _pageValue = 0;
 
   bool isCardVisible = false;
+
   @override
   void initState() {
     super.initState();
@@ -31,31 +30,64 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
   }
 
   Future<void> initializeProductListing() async {
-    List<ProductListing>? productList = await userClient.getAllProduct();
-    if (productList != null) {
-      productListing = productList;
-      filteredProductListing = List<ProductListing>.from(productListing);
-    } else {}
-  }
+    bool morePages = true;
+    int page = 1;
 
-  void _filterBarcodes() {
-    String barcodeQuery = barcodeController.text.toLowerCase();
-    setState(() {
-      filteredProductListing = productListing.where((product) {
-        return product.barcode.toLowerCase().contains(barcodeQuery);
-      }).toList();
-      isCardVisible = barcodeQuery.isNotEmpty;
-    });
+    while (morePages) {
+      try {
+        List<ProductListing> productList = await userClient.fetchDataForPage(page);
+        if (productList.isNotEmpty) {
+          if (mounted) {
+            setState(() {
+              productListing.addAll(productList);
+            });
+          }
+          page++;
+        } else {
+          morePages = false;
+        }
+      } catch (error) {
+        print('Error fetching data for page $page: $error');
+        morePages = false;
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        filteredProductListing = List<ProductListing>.from(productListing);
+      });
+    }
   }
 
   void _filterProducts() {
     String nameQuery = nameController.text.toLowerCase();
-    setState(() {
-      filteredProductListing = productListing.where((product) {
-        return product.name.toLowerCase().contains(nameQuery);
-      }).toList();
-      isCardVisible = nameQuery.isNotEmpty;
-    });
+    if (mounted) {
+      setState(() {
+        filteredProductListing = productListing.where((product) {
+          return product.name.toLowerCase().contains(nameQuery);
+        }).toList();
+        isCardVisible = nameQuery.isNotEmpty;
+      });
+    }
+  }
+
+  void _filterBarcodes() {
+    String barcodeQuery = barcodeController.text.toLowerCase();
+    if (mounted) {
+      setState(() {
+        filteredProductListing = productListing.where((product) {
+          return product.barcode.toLowerCase().contains(barcodeQuery);
+        }).toList();
+        isCardVisible = barcodeQuery.isNotEmpty;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    barcodeController.dispose();
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -98,12 +130,11 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 15),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   backgroundColor: _pageValue == 1
-                      ? Colors.grey // diğerine tıklayınca
-                      : const Color.fromARGB(192, 91, 67, 196), // aktif olan
-                  foregroundColor: Colors.black, // yazı rengi
+                      ? Colors.grey // other button pressed
+                      : const Color.fromARGB(192, 91, 67, 196), // active
+                  foregroundColor: Colors.black, // text color
                   elevation: 20,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -128,32 +159,33 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
               height: 40,
               width: (MediaQuery.of(context).size.width - 100) / 2,
               child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      textStyle: const TextStyle(fontSize: 15),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                      backgroundColor: _pageValue == 0
-                          ? Colors.grey
-                          : const Color.fromARGB(192, 91, 67, 196),
-                      elevation: 20,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      )),
-                  onPressed: () {
-                    setState(() {
-                      isCardVisible = false;
-                      _pageValue = 1;
-                    });
-                  },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Icon(Icons.photo_camera_outlined),
-                      Text("Kamera İle Arayın"),
-                    ],
-                  )),
-            )
+                style: ElevatedButton.styleFrom(
+                  textStyle: const TextStyle(fontSize: 15),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  backgroundColor: _pageValue == 0
+                      ? Colors.grey
+                      : const Color.fromARGB(192, 91, 67, 196),
+                  elevation: 20,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  setState(() {
+                    isCardVisible = false;
+                    _pageValue = 1;
+                  });
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(Icons.photo_camera_outlined),
+                    Text("Kamera İle Arayın"),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -267,19 +299,17 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
               ),
               child: ListTile(
                 onTap: () {
-                  print(
-                      "saçma ürün vol bilmem kaç? bknz.. ${filteredProductListing[index].name}");
+                  print("Product selected: ${filteredProductListing[index].id}");
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SellNewProduct()));
+                    context,
+                    MaterialPageRoute(builder: (context) => SellNewProduct(productId: filteredProductListing[index].id)),
+                  );
                 },
                 leading: SizedBox(
-                    height: 100,
-                    width: 100,
-                    child: Image(
-                        image:
-                            AssetImage(filteredProductListing[index].image))),
+                  height: 100,
+                  width: 100,
+                  child: Image(image: AssetImage(filteredProductListing[index].image)),
+                ),
                 title: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_retailer_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
-
-//product retailer screen
+import 'package:rahat_sat_project/screens/product_retailer_price_create.dart'; // Yeni sayfayı ekleyin
 
 class ProductRetailerPriceView extends StatefulWidget {
   final List<ProductRetailProductRetailPrices> inRetailerPrice;
@@ -109,7 +108,21 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
                           ),
                           IconButton(
                             icon: Icon(Icons.delete),
-                            onPressed: () {},
+                            onPressed: () async {
+                                 try {
+                                await userClient.deleteProductRetailPrice(retailer.id!);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Ürün perakende fiyatı başarıyla silindi.')),
+                                );
+                                setState(() {
+                                  retailers.remove(retailer); // Listeden silinen ürünü kaldır
+                                });
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Ürün perakende fiyatı silinirken hata oluştu.')),
+                                );
+                              }
+                            },
                           ),
                         ],
                       ),
@@ -129,7 +142,14 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
                   backgroundColor: MaterialStatePropertyAll(
                       Color.fromARGB(192, 91, 67, 196)),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductRetailPriceCreatePage(), // Yeni sayfaya yönlendirme
+                    ),
+                  );
+                },
                 child: Text("Yeni Ürün Perakende Fiyatı Oluştur",
                     style: GoogleFonts.getFont('Lato',
                         fontStyle: FontStyle.normal,
