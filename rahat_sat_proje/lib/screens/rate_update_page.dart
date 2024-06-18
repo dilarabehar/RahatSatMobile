@@ -1,6 +1,7 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rahat_sat_project/model/categories_model.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
 
 class RateUpdate extends StatefulWidget {
@@ -21,87 +22,124 @@ class _RateUpdateState extends State<RateUpdate> {
 
   final UserClient rateUpdate = UserClient();
 
+  List<CategoriesModelsListing> _categories = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final categories = await rateUpdate.getAllCategories();
+      setState(() {
+        _categories = categories;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Kategoriler yüklenirken bir hata oluştu: $e'),
+        ),
+      );
+    }
+  }
+
   Future<void> _submitRequest() async {
-  // Kategori seçimi kontrolü
-  if (selectedCategory == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Lütfen bir kategori seçiniz.'),
-      ),
-    );
-    return;
+    // Kategori seçimi kontrolü
+    if (selectedCategory == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Lütfen bir kategori seçiniz.'),
+        ),
+      );
+      return;
+    }
+
+    // Oran türü seçimi kontrolü
+    if (_character == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Lütfen bir oran türü seçiniz.'),
+        ),
+      );
+      return;
+    }
+
+    // Oran değeri kontrolü
+    if (selectedValue.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Lütfen bir oran değeri giriniz.'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      // Oranı güncelle
+      await rateUpdate.updateProductListingRates(
+        selectedCategory!, // Seçilen kategori ID'si
+        _character == RadioButtonOptions.KDV
+            ? 'tax'
+            : 'profit', // Oran türü (KDV veya Kar)
+        double.parse(selectedValue.text), // Oran değeri
+      );
+
+      // Başarılı bir şekilde güncellendiğine dair geri bildirim göster
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ürün oranları başarıyla güncellendi.'),
+        ),
+      );
+
+      // Sayfayı kapat
+      Navigator.pop(context);
+    } catch (e) {
+      // Hata durumunda bir hata mesajı göster
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ürün oranları güncellenirken bir hata oluştu: $e'),
+        ),
+      );
+    }
   }
-
-  // Oran türü seçimi kontrolü
-  if (_character == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Lütfen bir oran türü seçiniz.'),
-      ),
-    );
-    return;
-  }
-
-  // Oran değeri kontrolü
-  if (selectedValue.text.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Lütfen bir oran değeri giriniz.'),
-      ),
-    );
-    return;
-  }
-
-  try {
-    // Oranı güncelle
-    await rateUpdate.updateProductListingRates(
-      selectedCategory!, // Seçilen kategori ID'si
-      _character == RadioButtonOptions.KDV ? 'tax' : 'profit', // Oran türü (KDV veya Kar)
-      double.parse(selectedValue.text), // Oran değeri
-    );
-
-    // Başarılı bir şekilde güncellendiğine dair geri bildirim göster
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Ürün oranları başarıyla güncellendi.'),
-      ),
-    );
-
-    // Sayfayı kapat
-    Navigator.pop(context);
-  } catch (e) {
-    // Hata durumunda bir hata mesajı göster
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Ürün oranları güncellenirken bir hata oluştu: $e'),
-      ),
-    );
-  }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Card(
-                  elevation: 4,
-                  margin: EdgeInsets.all(8.0),
-                  child: Container(
-                    alignment: Alignment.center,
-                    child: rateUpdatePage(context),
-                    padding: const EdgeInsets.only(bottom: 10),
-                  ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Card(
+                      elevation: 4,
+                      margin: EdgeInsets.all(8.0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: rateUpdatePage(context),
+                        padding: const EdgeInsets.only(bottom: 10),
+                      ),
+                    ),
+                  ],
                 ),
-              ]),
-        ),
-      ),
+              ),
+            ),
     );
   }
 
@@ -121,13 +159,15 @@ class _RateUpdateState extends State<RateUpdate> {
           ),
         ),
         const SizedBox(height: 15),
-       Padding(
+        Padding(
           padding: const EdgeInsets.only(right: 20, left: 20),
           child: CustomDropdown<String>.search(
-            items: _list,
+            items: _categories.map((category) => category.name!).toList(),
             onChanged: (value) {
               setState(() {
-                selectedCategory = value; // Kategori seçildiğinde güncelle
+                selectedCategory = _categories
+                    .firstWhere((category) => category.name == value)
+                    .id; // Kategori seçildiğinde güncelle
               });
               print('changing value to: $value');
             },
