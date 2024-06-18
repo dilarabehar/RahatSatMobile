@@ -140,13 +140,19 @@ class _StaffPermissionUpdateState extends State<StaffPermissionUpdate> {
                     try {
                       await permissionsPatchService.updateStaffPermissions(
                         widget.staffPermissions.userId!,
-                        widget.staffPermissions.readCategories as bool,
-                        widget.staffPermissions.readProducts as bool,
-                        widget.staffPermissions.readStaff as bool,
-                        widget.staffPermissions.writeCategories as bool,
-                        widget.staffPermissions.writeProducts as bool,
-                        widget.staffPermissions.cameraSale as bool,
-                        widget.staffPermissions.writeStaff as bool,
+                        _permissions[RadioButtonOptions.categoryV]!,
+                        _permissions[RadioButtonOptions.productV]!,
+                        _permissions[RadioButtonOptions.staffV]!,
+                        _permissions[RadioButtonOptions.categoryU]!,
+                        _permissions[RadioButtonOptions.productU]!,
+                        _permissions[RadioButtonOptions.camera]!,
+                        _permissions[RadioButtonOptions.staffU]!,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text('Personel izinleri başarı ile güncellendi'),
+                        ),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
