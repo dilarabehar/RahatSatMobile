@@ -46,7 +46,7 @@ class _SalesListViewState extends State<SalesListView> {
           onNotification: (ScrollNotification scrollInfo) {
             if (scrollInfo.metrics.pixels ==
                 scrollInfo.metrics.maxScrollExtent) {
-                loadMoreData();
+              loadMoreData();
             }
             return false;
           },
@@ -66,7 +66,7 @@ class _SalesListViewState extends State<SalesListView> {
                             width: 50,
                             height: 50,
                             child: Image.network(
-                              product.product?.image as String ??
+                              product.product?.image ??
                                   "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
                               fit: BoxFit.fill,
                             ),
@@ -120,7 +120,7 @@ class _SalesListViewState extends State<SalesListView> {
                                                 fontWeight: FontWeight.w400)),
                                       ),
                                       Text(
-                                        'Tarih: ${product.updatedAt} TL',
+                                        'Tarih: ${product.updatedAt}',
                                         style: GoogleFonts.getFont('Lato',
                                             fontStyle: FontStyle.normal,
                                             textStyle: const TextStyle(

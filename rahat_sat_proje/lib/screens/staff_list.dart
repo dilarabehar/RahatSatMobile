@@ -68,7 +68,7 @@ class _StaffListViewState extends State<StaffListView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Personel Adı: ${staff.name}" ?? '',
+                                  "Personel Adı: ${staff.name}",
                                   style: GoogleFonts.getFont('Lato'),
                                 ),
                                 Text(

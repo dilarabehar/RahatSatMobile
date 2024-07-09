@@ -305,6 +305,7 @@ class ProductListing {
   final String createdAt;
   final String updatedAt;
   final ProductCategory category;
+ // final ProductModel model;
 
   ProductListing({
     required this.id,
@@ -315,6 +316,7 @@ class ProductListing {
     required this.createdAt,
     required this.updatedAt,
     required this.category,
+   // required this.model,
   });
 
   factory ProductListing.fromJson(Map<String, dynamic> json) {
@@ -327,6 +329,7 @@ class ProductListing {
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       category: ProductCategory.fromJson(json['category'] ?? {}),
+     // model: ProductModel.fromJson(json['model'] ?? {}),
     );
   }
 }

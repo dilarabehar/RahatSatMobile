@@ -74,7 +74,7 @@ class _ProductListViewState extends State<ProductListView> {
                             width: 50,
                             height: 50,
                             child: Image.network(
-                              product.image as String ??
+                              product.image! ??
                                   "https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg",
                               fit: BoxFit.fill,
                             ),
@@ -85,7 +85,7 @@ class _ProductListViewState extends State<ProductListView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  product.name ?? '',
+                                  product.name,
                                   style: GoogleFonts.getFont('Lato'),
                                 ),
                                 Text(

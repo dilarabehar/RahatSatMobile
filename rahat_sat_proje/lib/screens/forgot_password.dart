@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:rahat_sat_mobil_uygulama/screens/login_page.dart';
 import 'package:rahat_sat_project/screens/login_page.dart';
 
 class ForgotPassword extends StatefulWidget {

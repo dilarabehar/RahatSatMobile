@@ -18,7 +18,7 @@ const List<String> _list = <String>['One', 'Two', 'Three', 'Four'];
 class _RateUpdateState extends State<RateUpdate> {
   RadioButtonOptions? _character = RadioButtonOptions.KDV;
   TextEditingController selectedValue = TextEditingController();
-  String? selectedCategory; // Yeni eklenen değişken
+  String? selectedCategory;
 
   final UserClient rateUpdate = UserClient();
 

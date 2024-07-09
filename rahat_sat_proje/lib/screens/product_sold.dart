@@ -48,7 +48,7 @@ class _ProductSoldViewState extends State<ProductSoldView> {
                           width: 50,
                           height: 50,
                           child: Image.network(
-                            "https://uygulama.rahatsat.com/productImages/8690526095264.jpeg",
+                            "https://uygulama.rahatsat.com/productImages/${product.product!.barcode}.jpeg",
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -218,5 +218,3 @@ class _ProductSoldViewState extends State<ProductSoldView> {
     );
   }
 }
-// 7QSNTzh86EePCu3K
-// admin@rahatsat.com

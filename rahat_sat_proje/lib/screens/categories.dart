@@ -76,7 +76,7 @@ Future<void> loadMoreData() async {
                           width: 50,
                           height: 50,
                           child: Image.network(
-                            categories.image as String,
+                            "https://uygulama.rahatsat.com/productImages/${categories.barcode}.jpeg",
                             fit: BoxFit.fill,
                           ),
                         ),

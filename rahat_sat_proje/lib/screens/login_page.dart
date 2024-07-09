@@ -104,16 +104,6 @@ class _LoginPage extends State<LoginPage> {
                     color: Colors.white,
                   ),
                   const SizedBox(height: 25),
-                  /*Text(
-                      textAlign: TextAlign.left,
-                      "Giriş Yap",
-                      style: TextStyle(
-                          color: Colors.deepPurple[400],
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 50)
-                          ),
-                  const SizedBox(height: 25),*/
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: TextField(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rahat_sat_project/main.dart';
 import 'package:rahat_sat_project/model/categories_model.dart';
 import 'package:rahat_sat_project/model/markets_model.dart';
 import 'package:rahat_sat_project/model/product_model.dart';
@@ -10,7 +11,6 @@ import 'package:rahat_sat_project/model/staff_permissions_model.dart';
 import 'package:rahat_sat_project/model/users_model.dart';
 import 'package:rahat_sat_project/screens/barcode.dart';
 import 'package:rahat_sat_project/screens/categories.dart';
-import 'package:rahat_sat_project/screens/login_page.dart';
 import 'package:rahat_sat_project/screens/markets.dart';
 import 'package:rahat_sat_project/screens/product_list.dart';
 import 'package:rahat_sat_project/screens/product_requests.dart';
@@ -34,6 +34,8 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   bool _isFullScreen = false;
   bool _login = false;
+  String _displayText = "";
+  ThemeMode _themeMode = ThemeMode.system;
 
   // Satılan Ürünler
 
@@ -300,6 +302,13 @@ class _HomePage extends State<HomePage> {
     });
   }
 
+  void toggleThemeMode() {
+    setState(() {
+      _themeMode =
+          _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
+
   Widget _buildListTile(IconData icon, String title, void Function() onTap) {
     return ListTile(
       onTap: onTap, // Doğrudan getSoldProducts fonksiyonunu buraya ata
@@ -350,7 +359,18 @@ class _HomePage extends State<HomePage> {
                   ),
                 ),
                 //cmd
-                // _buildListTile(Icons.home, "Ana Sayfa",HomePage()),
+                ListTile(
+                  onTap: () {
+                    setState(() {
+                      _displayText = "Ana Sayfa";
+                    });
+                    Navigator.pop(context);
+                  },
+                  leading:
+                      SizedBox(height: 34, width: 34, child: Icon(Icons.home)),
+                  title: const Text("Ana Sayfa"),
+                ),
+
                 _buildListTile(
                     Icons.shopping_bag, "Satılan Ürünler", getSoldProducts),
                 _buildListTile(Icons.person, "Personeller", getAllStaff),
@@ -412,13 +432,13 @@ class _HomePage extends State<HomePage> {
                   icon: Icon(_isFullScreen == ThemeMode.dark
                       ? Icons.dark_mode
                       : Icons.light_mode),
-                  onPressed: null,
+                  onPressed: () => toggleThemeMode(),
                   color: Colors.black87,
                 ),
                 IconButton(
                   icon: const Icon(Icons.logout_outlined),
                   onPressed: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LoginPage())),
+                      MaterialPageRoute(builder: (context) => const MyApp())),
                   color: Colors.black87,
                 )
               ],
@@ -426,6 +446,12 @@ class _HomePage extends State<HomePage> {
           ],
         ),
         drawer: _drawerWidget(),
+        body: Center(
+          child: Text(
+            _displayText,
+            style: const TextStyle(fontSize: 15),
+          ),
+        ),
       ),
     );
   }

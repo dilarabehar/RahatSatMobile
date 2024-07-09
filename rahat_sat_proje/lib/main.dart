@@ -24,7 +24,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       darkTheme: ThemeData(brightness: Brightness.dark),
-      home: MyHomePage(title: "myhomepage",),
+      home: MyHomePage(
+        title: "myhomepage",
+      ),
     );
   }
 }

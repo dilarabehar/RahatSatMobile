@@ -250,7 +250,16 @@ class _SellNewProductState extends State<SellNewProduct> {
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color.fromARGB(255, 192, 6, 6)),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      urunStokMiktariController.clear();
+                      urunBirimMaliyetController.clear();
+                      kdvOrani.clear();
+                      karOraniController.clear();
+                      urunToplamFiyatController.clear();
+                    });
+                    
+                  },
                   child: const Text("SİL"),
                 ),
                 const SizedBox(width: 8),

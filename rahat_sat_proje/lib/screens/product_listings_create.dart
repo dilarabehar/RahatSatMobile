@@ -14,12 +14,17 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
   TextEditingController barcodeController = TextEditingController();
   TextEditingController nameController = TextEditingController();
 
+  late TextEditingController productNameController;
+  late TextEditingController productBarcodeController;
+  late TextEditingController productMessageController;
+
   UserClient userClient = UserClient();
   late List<ProductListing> productListing = [];
   List<ProductListing> filteredProductListing = [];
 
   String? barcodeValue;
   int _pageValue = 0;
+  bool _isLoading = true;
 
   bool isCardVisible = false;
 
@@ -35,7 +40,8 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
 
     while (morePages) {
       try {
-        List<ProductListing> productList = await userClient.fetchDataForPage(page);
+        List<ProductListing> productList =
+            await userClient.fetchDataForPage(page);
         if (productList.isNotEmpty) {
           if (mounted) {
             setState(() {
@@ -130,7 +136,8 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 15),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   backgroundColor: _pageValue == 1
                       ? Colors.grey // other button pressed
                       : const Color.fromARGB(192, 91, 67, 196), // active
@@ -161,7 +168,8 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 15),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   backgroundColor: _pageValue == 0
                       ? Colors.grey
                       : const Color.fromARGB(192, 91, 67, 196),
@@ -274,68 +282,254 @@ class _ProductListingCreateState extends State<ProductListingCreate> {
   }
 
   Card _activeCard() {
-    return Card(
-      color: Color.fromARGB(192, 91, 67, 196),
-      elevation: 25,
-      margin: const EdgeInsets.all(15),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: List.generate(filteredProductListing.length, (index) {
-            return Container(
-              margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(2, 2),
-                  ),
-                ],
+    if (filteredProductListing.isEmpty) {
+      return Card(
+        color: Colors.white,
+        elevation: 25,
+        margin: const EdgeInsets.all(15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.amber,
+                size: 40,
               ),
-              child: ListTile(
-                onTap: () {
-                  print("Product selected: ${filteredProductListing[index].id}");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SellNewProduct(productId: filteredProductListing[index].id)),
+              SizedBox(height: 10),
+              Text(
+                "Üzgünüz, aradığınız ürün bulunamadı.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black54,
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).colorScheme.inversePrimary)),
+                onPressed: () {
+                  // Popup (dialog) açma işlevi
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      productNameController = TextEditingController();
+                      productBarcodeController = TextEditingController();
+                      productMessageController = TextEditingController();
+                      return AlertDialog(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.inversePrimary,
+                        title: Text("Yeni Ürün Talebi"),
+                        contentPadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              "Ürün barkodlarımız yetersiz veya yanlış ise aşağıdaki formu doldurarak bize ulaşabilirsiniz",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                            TextField(
+                              controller: productNameController,
+                              decoration: InputDecoration(
+                                labelText: "Ürün İsmi",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    borderSide: const BorderSide(
+                                        color: Colors.black38)),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              keyboardType: TextInputType.number,
+                              controller: productBarcodeController,
+                              decoration: InputDecoration(
+                                labelText: "Ürün Barkodu",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                              keyboardType: TextInputType.multiline,
+                              controller: productMessageController,
+                              decoration: InputDecoration(
+                                labelText: "Mesajınız",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                        actions: [
+                          ButtonBar(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  try {
+                                    userClient.newProductRequest(
+                                        productNameController.text,
+                                        productBarcodeController.text,
+                                        productMessageController.text);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Ürün talebiniz alındı. Uygun görülürse işleme alınacak.'),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            'Ürün talebi oluşturulurken bir hata oluştu: $e'),
+                                      ),
+                                    );
+                                  }
+                                  print(
+                                      "Yeni ürün oluşturma talebi gönderildi");
+                                  Navigator.pop(
+                                      context); // Diyalog penceresini kapat
+                                },
+                                child: Text("Gönder"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(
+                                      context); // Diyalog penceresini kapat
+                                },
+                                child: Text("Kapat"),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
-                leading: SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Image(image: AssetImage(filteredProductListing[index].image)),
-                ),
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Ürün: ${filteredProductListing[index].name}",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "Barkod: ${filteredProductListing[index].barcode}",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ],
-                ),
+                child: Text("Ürün Talebi Oluştur"),
               ),
-            );
-          }),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      // Group products by category
+      Map<String, List<ProductListing>> groupedByCategory = {};
+      for (var product in filteredProductListing) {
+        if (groupedByCategory.containsKey(product.category)) {
+          groupedByCategory[product.category]!.add(product);
+        } else {
+          groupedByCategory[product.category.name] = [product];
+        }
+      }
+
+      return Card(
+        color: Color.fromARGB(192, 91, 67, 196),
+        elevation: 25,
+        margin: const EdgeInsets.all(15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: groupedByCategory.entries.map((entry) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    color: Colors.white70,
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Text(
+                      entry.key,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: entry.value.map((product) {
+                      return Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(width: 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 4,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          onTap: () {
+                            print("Product selected: ${product.id}");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SellNewProduct(productId: product.id),
+                              ),
+                            );
+                          },
+                          leading: SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Image.network(
+                              "https://uygulama.rahatsat.com/productImages/${product.image}.jpeg",
+                            ),
+                          ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Ürün: ${product.name}",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "Barkod: ${product.barcode}",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        ),
+      );
+    }
   }
 
   Expanded _searchWithCamera() {

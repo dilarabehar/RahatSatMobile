@@ -139,30 +139,38 @@ class UserClient {
 
   Future<List<ProductListing>> fetchDataForPage(int page) async {
     try {
+      List<ProductListing> productListingList = [];
       var token = await _dataService.tryGetItem("token");
+
       if (token != null) {
-        var response = await http.get(
-          Uri.parse(baseUrl +
-              "products?page=$page"), // Include the page parameter in the URL
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": "Bearer $token"
-          },
-        );
+        int perPage = 10;
+        bool hasMore = true;
+        while (hasMore) {
+          var response = await http.get(
+            Uri.parse(baseUrl +
+                "products?page=$page&perPage=$perPage"), // Include the page parameter in the URL
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "Bearer $token"
+            },
+          );
+          if (response.statusCode == 200) {
+            var responseData = jsonDecode(response.body);
+            var products = responseData["products"] as List;
+            int total = responseData["total"];
+            productListingList.addAll(
+                products.map((data) => ProductListing.fromJson(data)).toList());
 
-        if (response.statusCode == 200) {
-          List<ProductListing> productListingList = [];
-
-          var products = jsonDecode(response.body)["products"];
-          if (products is List) {
-            for (var product in products) {
-              productListingList.add(ProductListing.fromJson(product));
-            }
-            return productListingList;
+            page++;
+            hasMore = productListingList.length < total;
+          } else {
+            hasMore = false;
           }
+          return productListingList;
         }
       }
+
       // Handle the case where the request fails
       throw Exception('Failed to load data for page $page');
     } catch (error) {
@@ -170,6 +178,7 @@ class UserClient {
       // Handle any errors that occur during the process
       throw Exception('Error fetching data for page $page: $error');
     }
+    return [];
   }
 
 // Tüm kategorilerin sayfa sayfa yüklenmesi için

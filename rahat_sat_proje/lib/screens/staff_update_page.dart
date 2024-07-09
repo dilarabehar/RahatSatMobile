@@ -123,7 +123,6 @@ class _StaffUpdatePageState extends State<StaffUpdatePage> {
                           SnackBar(
                             content: Text(
                                 'Personel güncellenirken bir hata oluştu: $e'),
-                                
                           ),
                         );
                       }

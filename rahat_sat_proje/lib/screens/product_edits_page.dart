@@ -259,13 +259,13 @@ class _ProductsEditState extends State<ProductsEdit> {
                         ),
                       );
                     } catch (e) {
-                      print(widget.inSoldListing.id ?? null);
+                      /* print(widget.inSoldListing.id ?? null);
                       print(urunStokMiktariController.text ?? "stock hatası");
                       print(urunBirimMaliyetController.text ?? "unit hatası");
                       print(kdvOrani.text ?? "tax hatası");
                       print(karOraniController.text ?? "profit hatası");
                       print(urunToplamFiyatController.text ??
-                          "toplam fiyat hatası");
+                          "toplam fiyat hatası");*/
                       print("Bir hata ile karşılaşıldı: ${e}");
                     }
                   },
@@ -277,7 +277,15 @@ class _ProductsEditState extends State<ProductsEdit> {
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color.fromARGB(255, 192, 6, 6)),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      urunStokMiktariController.clear();
+                      urunBirimMaliyetController.clear();
+                      kdvOrani.clear();
+                      karOraniController.clear();
+                      urunToplamFiyatController.clear();
+                    });
+                  },
                   child: const Text("SİL"),
                 ),
                 const SizedBox(width: 8),

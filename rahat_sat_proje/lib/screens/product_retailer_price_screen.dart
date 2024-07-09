@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahat_sat_project/model/product_retailer_model.dart';
+import 'package:rahat_sat_project/screens/product_retailer_price_create.dart';
 import 'package:rahat_sat_project/services/user_client.dart';
-import 'package:rahat_sat_project/screens/product_retailer_price_create.dart'; // Yeni sayfayı ekleyin
 
 class ProductRetailerPriceView extends StatefulWidget {
   final List<ProductRetailProductRetailPrices> inRetailerPrice;
@@ -69,12 +69,11 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Ürün: ${retailer.product?.name}" ?? '',
+                                  "Ürün: ${retailer.product?.name}",
                                   style: GoogleFonts.getFont('Lato'),
                                 ),
                                 Text(
-                                  "Perakende Satıcı Adı: ${retailer.retailerName}" ??
-                                      '',
+                                  "Perakende Satıcı Adı: ${retailer.retailerName}",
                                   style: GoogleFonts.getFont('Lato',
                                       fontStyle: FontStyle.normal,
                                       textStyle: const TextStyle(
@@ -88,7 +87,7 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
                                           fontWeight: FontWeight.w400)),
                                 ),
                                 Text(
-                                  "Veri Tarihi: ${retailer.dataDate}" ?? '',
+                                  "Veri Tarihi: ${retailer.dataDate}",
                                   style: GoogleFonts.getFont('Lato',
                                       fontStyle: FontStyle.normal,
                                       textStyle: const TextStyle(
@@ -109,17 +108,23 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
                           IconButton(
                             icon: Icon(Icons.delete),
                             onPressed: () async {
-                                 try {
-                                await userClient.deleteProductRetailPrice(retailer.id!);
+                              try {
+                                await userClient
+                                    .deleteProductRetailPrice(retailer.id!);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Ürün perakende fiyatı başarıyla silindi.')),
+                                  SnackBar(
+                                      content: Text(
+                                          'Ürün perakende fiyatı başarıyla silindi.')),
                                 );
                                 setState(() {
-                                  retailers.remove(retailer); // Listeden silinen ürünü kaldır
+                                  retailers.remove(
+                                      retailer); // Listeden silinen ürünü kaldır
                                 });
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Ürün perakende fiyatı silinirken hata oluştu.')),
+                                  SnackBar(
+                                      content: Text(
+                                          'Ürün perakende fiyatı silinirken hata oluştu.')),
                                 );
                               }
                             },
@@ -146,7 +151,8 @@ class _ProductRetailerPriceViewState extends State<ProductRetailerPriceView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProductRetailPriceCreatePage(), // Yeni sayfaya yönlendirme
+                      builder: (context) =>
+                          ProductRetailPriceCreatePage(), // Yeni sayfaya yönlendirme
                     ),
                   );
                 },

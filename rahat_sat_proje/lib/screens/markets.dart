@@ -66,11 +66,11 @@ class _MarketsViewState extends State<MarketsView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Market Ad: ${markets.name}" ?? '',
+                                  "Market Ad: ${markets.name}",
                                   style: GoogleFonts.getFont('Lato'),
                                 ),
                                 Text(
-                                  "Adres: ${markets.address}" ?? '',
+                                  "Adres: ${markets.address}",
                                   style: GoogleFonts.getFont('Lato'),
                                 ),
                               ],
@@ -91,14 +91,19 @@ class _MarketsViewState extends State<MarketsView> {
                               try {
                                 await userClient.deleteMarket(markets.id!);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Market başarıyla silindi.')),
+                                  SnackBar(
+                                      content:
+                                          Text('Market başarıyla silindi.')),
                                 );
                                 setState(() {
-                                  marketsList.remove(markets); // Listeden silinen marketi kaldır
+                                  marketsList.remove(
+                                      markets); // Listeden silinen marketi kaldır
                                 });
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Market silinirken hata oluştu.')),
+                                  SnackBar(
+                                      content: Text(
+                                          'Market silinirken hata oluştu.')),
                                 );
                               }
                             },
